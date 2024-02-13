@@ -1,0 +1,37 @@
+name: Release Aqueductpy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Aqueductpy Version"
+        required: true
+        type: string
+        default: "MAJOR.MINOR.PATCH"
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setting up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Build Release Test Containers
+        run: ci/build_release.sh -p true -t ${{ inputs.version }}
+
+      - name: Create release and upload artifacts
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          tag: ${{ inputs.version }}
+          name: "${{ inputs.version }}"
+          allowUpdates: true
+          artifacts: "dist/aqueductpy-*.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
