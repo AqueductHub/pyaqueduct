@@ -25,7 +25,11 @@ jobs:
           python-version: 3.8
 
       - name: Build Release Test Containers
-        run: ci/build_release.sh -p true -t ${{ inputs.version }}
+        run: ci/build_release.sh -t ${{ inputs.version }}
+
+      - name: Push package to Pypi
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.AQUEDUCTHUB_PYPI_TOKEN }}
 
       - name: Create release and upload artifacts
         uses: ncipollo/release-action@v1.12.0

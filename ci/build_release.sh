@@ -2,7 +2,6 @@
 
 # This script builds the docker images for a release
 # -t Tag to tag images with, defaults to dev if not specified
-# -p Push built package to PyPi
 
 FULL_PATH=$(realpath $0)
 SCRIPT_DIR=$(dirname $FULL_PATH)
@@ -13,11 +12,10 @@ set -o pipefail
 tag="dev"
 push="false"
 
-while getopts "t:p:" flag
+while getopts "t:" flag
 do 
     case "${flag}" in
         t) tag=${OPTARG};;
-        p) push=${OPTARG};;
     esac
 done
 
@@ -33,7 +31,3 @@ fi
 
 echo "Create sdist"
 poetry build -f sdist
-
-if [[ $push != "false" ]]; then
-
-fi
