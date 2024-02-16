@@ -30,4 +30,4 @@ echo "Installing poetry"
 fi
 
 echo "Create sdist"
-poetry build -f sdist
+poetry build
