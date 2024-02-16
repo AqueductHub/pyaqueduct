@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "aqueductpy"
+version = "0.0.1"
+description = "Aqueduct Python Client Library"
+authors = ["Aqueduct Team <aqueduct@riverlane.com>"]
+license = "MIT"
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">= 3.8,< 3.12"
+requests = "^2.31"
+tqdm = "^4.66"
+httpx = "^0.25"
+types-tqdm = "^4.66"
+pydantic = "^2.5"
+gql = {extras = ["httpx"], version = "^3.5"}
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4"
+pylint = "^2.17"
+yapf = "^0.40"
+mypy = "^1.5"
+pytest-cov = "^4.1"
+pylint-protobuf = "^0.20"
+mypy-protobuf = "^3.5"
+pip-licenses = "^4.3"
+requests = "^2.31"
+pytest-asyncio = "^0.21"
+pytest-mock = "^3.12"
+ipykernel = "^6.28"
+mike = "^2.0"
+mkdocs-material = "^9.5"
+nbconvert = "^7.16"
+mkdocstrings = {version = "^0.24",extras = ["python"]}
+
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
