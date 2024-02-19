@@ -1,11 +1,13 @@
 [tool.poetry]
 name = "pyaqueduct"
-version = "0.0.3"
+version = "0.0.4"
 description = "Aqueduct Python Client Library"
 authors = ["Aqueduct Team <aqueduct@riverlane.com>"]
 license = "MIT"
 readme = "README.md"
-
+homepage = "https://aqueducthub.github.io"
+documentation = "https://aqueducthub.github.io"
+repository = "https://github.com/AqueductHub/pyaqueduct"
 
 [tool.poetry.dependencies]
 python = ">= 3.8,< 3.12"
@@ -35,10 +37,7 @@ mkdocs-material = "^9.5"
 nbconvert = "^7.16"
 mkdocstrings = {version = "^0.24",extras = ["python"]}
 
-[project.urls]
-Homepage = "https://aqueducthub.github.io"
-Documentation = "https://aqueducthub.github.io"
-Repository = "https://github.com/AqueductHub/pyaqueduct"
+[tool.poetry.urls]
 Issues = "https://github.com/AqueductHub/pyaqueduct/issues"
 
 [build-system]
