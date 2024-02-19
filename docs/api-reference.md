@@ -3,7 +3,7 @@ title: Python API Reference
 summary: Covers how to install the software.
 ---
 
-::: aqueductpy.API
+::: pyaqueduct.API
     options:
       show_source: false
       heading_level: 2
@@ -11,7 +11,7 @@ summary: Covers how to install the software.
       show_root_heading: true
 
 
-::: aqueductpy.experiment.Experiment
+::: pyaqueduct.experiment.Experiment
     options:
         show_source: false
         heading_level: 2

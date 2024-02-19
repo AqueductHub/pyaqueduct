@@ -10,7 +10,7 @@ set -o pipefail
 
 poetry run pytest --cov-config=$PROJECT_ROOT/.coveragerc \
 --cov-report=term-missing:skip-covered \
---junitxml=$PROJECT_ROOT/pytest.xml --cov=$PROJECT_ROOT/aqueductpy \
+--junitxml=$PROJECT_ROOT/pytest.xml --cov=$PROJECT_ROOT/pyaqueduct \
 $PROJECT_ROOT/tests/unittests | tee $PROJECT_ROOT/pytest-coverage.txt
 if [[ $? -ne 0 ]]; then
 unset pipefail

@@ -3,13 +3,13 @@ from collections import namedtuple
 from datetime import datetime
 from uuid import uuid4
 
-from aqueductpy.client import (
+from pyaqueduct.client import (
     AqueductClient,
     ExperimentData,
     ExperimentFile,
     ExperimentsInfo,
 )
-from aqueductpy.experiment import Experiment
+from pyaqueduct.experiment import Experiment
 
 
 def test_experiment_title(monkeypatch):

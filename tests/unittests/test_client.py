@@ -5,7 +5,7 @@ from uuid import uuid4
 from gql.client import SyncClientSession
 from httpx import Response
 
-from aqueductpy.client import AqueductClient
+from pyaqueduct.client import AqueductClient
 from tests.unittests.mock import patched_execute
 
 
@@ -114,7 +114,7 @@ def test_get_tags(monkeypatch):
     assert len(tags.tags) == 10
 
 
-@patch("aqueductpy.client.client.post")
+@patch("pyaqueduct.client.client.post")
 def test_file_upload(fake_httpx_post):
     fake_httpx_post.return_value = Response(status_code=200)
 
@@ -125,7 +125,7 @@ def test_file_upload(fake_httpx_post):
         assert data.result == "success"
 
 
-@patch("aqueductpy.client.client.stream")
+@patch("pyaqueduct.client.client.stream")
 def test_file_download(fake_httpx_stream, mocker):
     fake_httpx_stream.return_value.__enter__.return_value = mocker.Mock()
     fake_httpx_stream.return_value.__enter__.return_value.status_code = 200

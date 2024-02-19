@@ -3,8 +3,8 @@ from collections import namedtuple
 from datetime import datetime
 from uuid import uuid4
 
-from aqueductpy.api import API
-from aqueductpy.client import AqueductClient, ExperimentData, ExperimentsInfo
+from pyaqueduct.api import API
+from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
 
 
 def test_create_experiment(monkeypatch):

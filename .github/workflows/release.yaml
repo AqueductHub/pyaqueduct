@@ -1,10 +1,10 @@
-name: Release Aqueductpy
+name: Release PyAqueduct
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Aqueductpy Version"
+        description: "PyAqueduct Version"
         required: true
         type: string
         default: "MAJOR.MINOR.PATCH"
@@ -38,5 +38,5 @@ jobs:
           tag: ${{ inputs.version }}
           name: "${{ inputs.version }}"
           allowUpdates: true
-          artifacts: "dist/aqueductpy-*.tar.gz"
+          artifacts: "dist/pyaqueduct-*.tar.gz"
           token: ${{ secrets.GITHUB_TOKEN }}

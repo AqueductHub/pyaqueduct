@@ -1,5 +1,5 @@
 {
-	"name": "Aqueductpy Dev Container",
+	"name": "PyAqueduct Dev Container",
 	"context": "..",
 	"dockerFile": "../containers/Dockerfile",
 	"customizations": {

@@ -1,12 +1,13 @@
 """Aqueduct application programming interface (API) module."""
+
 from __future__ import annotations
 
 from typing import List
 
 from pydantic import BaseModel, Field, HttpUrl, PositiveFloat, PrivateAttr
 
-from aqueductpy.client import AqueductClient
-from aqueductpy.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
+from pyaqueduct.client import AqueductClient
+from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
 
 
 class API(BaseModel):

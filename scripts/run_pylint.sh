@@ -6,4 +6,4 @@ FULL_PATH=$(realpath $0)
 SCRIPT_DIR=$(dirname $FULL_PATH)
 PROJECT_ROOT=$SCRIPT_DIR/..
 
-cd $PROJECT_ROOT && poetry run pylint aqueductpy/
+cd $PROJECT_ROOT && poetry run pylint pyaqueduct/

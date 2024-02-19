@@ -14,18 +14,18 @@ from httpx import WriteTimeout, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
-from aqueductpy.client.types import ExperimentData, ExperimentsInfo, TagsData
-from aqueductpy.exceptions import (
+from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
+from pyaqueduct.exceptions import (
     InterruptedDownloadException,
     InterruptedUploadException,
 )
-from aqueductpy.schemas.mutations import (
+from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
     create_experiment_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
-from aqueductpy.schemas.queries import (
+from pyaqueduct.schemas.queries import (
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
