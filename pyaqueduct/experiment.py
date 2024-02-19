@@ -1,4 +1,5 @@
 """Experiment module."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -8,7 +9,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from aqueductpy.client import AqueductClient
+from pyaqueduct.client import AqueductClient
 
 _MAX_TITLE_LENGTH = 100
 _MAX_DESCRIPTION_LENGTH = 2000

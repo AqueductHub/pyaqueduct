@@ -1,12 +1,12 @@
 from uuid import uuid4
 
-from aqueductpy.schemas.mutations import (
+from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
     create_experiment_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
-from aqueductpy.schemas.queries import (
+from pyaqueduct.schemas.queries import (
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,

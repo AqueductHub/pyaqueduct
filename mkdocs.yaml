@@ -1,7 +1,7 @@
 site_name: Aqueduct Python Client
 site_author: Riverlane Ltd.
-site_url: https://aqueducthub.github.io/aqueductpy/
-repo_name: aqueducthub/aqueductpy
+site_url: https://aqueducthub.github.io/pyaqueduct/
+repo_name: aqueducthub/pyaqueduct
 docs_dir: "docs"
 theme:
   name: material
@@ -60,7 +60,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [aqueductpy]
+          paths: [pyaqueduct]
 
 nav:
   - "index.md"
