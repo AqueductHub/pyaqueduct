@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "pyaqueduct"
-version = "0.0.4"
+version = "0.0.5"
 description = "Aqueduct Python Client Library"
 authors = ["Aqueduct Team <aqueduct@riverlane.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://aqueducthub.github.io"
-documentation = "https://aqueducthub.github.io"
+homepage = "https://aqueducthub.github.io/pyaqueduct"
+documentation = "https://aqueducthub.github.io/pyaqueduct"
 repository = "https://github.com/AqueductHub/pyaqueduct"
 
 [tool.poetry.dependencies]
