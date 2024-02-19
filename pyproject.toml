@@ -35,6 +35,12 @@ mkdocs-material = "^9.5"
 nbconvert = "^7.16"
 mkdocstrings = {version = "^0.24",extras = ["python"]}
 
+[project.urls]
+Homepage = "https://aqueducthub.github.io"
+Documentation = "https://aqueducthub.github.io"
+Repository = "https://github.com/AqueductHub/pyaqueduct"
+Issues = "https://github.com/AqueductHub/pyaqueduct/issues"
+
 [build-system]
 requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
