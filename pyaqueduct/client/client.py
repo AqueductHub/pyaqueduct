@@ -62,7 +62,9 @@ class AqueductClient(BaseModel):
         """
         super().__init__(url=HttpUrl(url), timeout=timeout)
 
-        self._gql_client = Client(transport=HTTPXTransport(url=f"{url}/graphql"))
+        self._gql_client = Client(
+            transport=HTTPXTransport(url=f"{url}/graphql", timeout=self.timeout)
+        )
         self.connect()
 
     def connect(self):
