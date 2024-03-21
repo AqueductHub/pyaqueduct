@@ -4,7 +4,7 @@ import logging
 import os
 from datetime import date
 from http import HTTPStatus
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from gql import Client
@@ -52,18 +52,21 @@ class AqueductClient(BaseModel):
     timeout: float
     _gql_client: Client = PrivateAttr()
     _session: SyncClientSession = PrivateAttr()
+    _headers: Dict[str, str] = PrivateAttr()
 
-    def __init__(self, url: str, timeout: float):
+    def __init__(self, url: str, timeout: float, api_token: Optional[str] = None):
         """
         Args:
             url: URL of the Aqueduct server endpoint.
             timeout: Response timeout in seconds.
 
         """
-        super().__init__(url=HttpUrl(url), timeout=timeout)
-
+        super().__init__(url=url, timeout=timeout)
+        self._headers = {"": api_token} if api_token else {}
         self._gql_client = Client(
-            transport=HTTPXTransport(url=f"{url}/graphql", timeout=self.timeout)
+            transport=HTTPXTransport(
+                url=f"{url}/graphql", timeout=self.timeout, headers=self._headers
+            )
         )
         self.connect()
 
@@ -283,9 +286,7 @@ class AqueductClient(BaseModel):
 
         """
 
-        headers = {
-            "file_name": os.path.basename(file),
-        }
+        headers = {"file_name": os.path.basename(file), **self._headers}
 
         upload_url = f"{self.url}/files/{str(experiment_uuid)}"
         with open(file, "rb") as files:
@@ -323,7 +324,9 @@ class AqueductClient(BaseModel):
 
         try:
             with open(destination, "wb") as download_file:
-                with stream("GET", download_url, timeout=self.timeout) as response:
+                with stream(
+                    "GET", download_url, timeout=self.timeout, headers=self._headers
+                ) as response:
                     total = int(response.headers["Content-Length"])
                     with tqdm(
                         total=total, unit_scale=True, unit_divisor=1024, unit="B"
