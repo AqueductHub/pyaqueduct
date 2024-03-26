@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field, HttpUrl, PositiveFloat, PrivateAttr
 
 from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
-from pyaqueduct.settings import settings
+from pyaqueduct.settings import Settings
 
 
 class API(BaseModel):
@@ -32,7 +32,7 @@ class API(BaseModel):
             url = url + "/"
         api_url = f"{url}api"
 
-        self._client = AqueductClient(url=api_url, timeout=timeout, api_token=settings.api_token)
+        self._client = AqueductClient(url=api_url, timeout=timeout, api_token=Settings().api_token)
 
     def create_experiment(
         self,
