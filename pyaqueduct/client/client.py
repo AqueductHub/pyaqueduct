@@ -107,7 +107,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        experiment_obj = ExperimentData.from_dict(experiment["createExperiment"])
+        experiment_obj = ExperimentData.from_dict(
+            experiment["createExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Created experiment - %s - %s", experiment_obj.id, experiment_obj.title)
         return experiment_obj
 
@@ -149,7 +151,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        experiment_obj = ExperimentData.from_dict(experiment["updateExperiment"])
+        experiment_obj = ExperimentData.from_dict(
+            experiment["updateExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Updated experiment - %s", experiment_obj.id)
         return experiment_obj
 
@@ -200,7 +204,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        experiments_obj = ExperimentsInfo.from_dict(experiments["experiments"])
+        experiments_obj = ExperimentsInfo.from_dict(
+            experiments["experiments"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info(
             "Fetched %s experiments, total %s experiments",
             len(experiments_obj.experiments),
@@ -232,7 +238,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        experiment_obj = ExperimentData.from_dict(experiment["experiment"])
+        experiment_obj = ExperimentData.from_dict(
+            experiment["experiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -260,7 +268,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        experiment_obj = ExperimentData.from_dict(experiment["experiment"])
+        experiment_obj = ExperimentData.from_dict(
+            experiment["experiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -355,7 +365,7 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        tags_obj = TagsData.from_dict(tags["tags"])
+        tags_obj = TagsData.from_dict(tags["tags"])  # pylint: disable=unsubscriptable-object
         logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
         return tags_obj
 
