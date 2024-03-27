@@ -122,7 +122,6 @@ def test_file_upload(fake_httpx_post):
 
     with tempfile.NamedTemporaryFile() as file:
         data = client.upload_file(uuid4(), file.name)
-        assert data.result == "success"
 
 
 @patch("pyaqueduct.client.client.stream")
@@ -150,5 +149,3 @@ def test_file_download(fake_httpx_stream, mocker):
 
     with tempfile.TemporaryDirectory() as dir:
         response = client.download_file(uuid4(), "sample.txt", dir)
-        assert response.result == "success"
-        assert response.message == f"File downloaded to {dir}/sample.txt"

@@ -1,35 +1,29 @@
 """Aqueduct exceptions."""
 
 
-class AqueductException(Exception):
-    """Aqueduct Exception base class."""
-
-    message: str
-
-    def __init__(self, message: str):
-        Exception.__init__(self, message)
-        self.message = message
+class PyAqueductError(Exception):
+    """Aqueduct exception base class."""
 
 
-class FileNotFoundException(AqueductException):
-    """File Not Found Exception."""
-
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = "File was not found on the server."
+class RemoteOperationError(PyAqueductError):
+    """Remote operation error."""
 
 
-class InterruptedUploadException(AqueductException):
-    """Interrupted Upload Exception."""
-
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = "Upload failed as upload was interrupted."
+class ForbiddenError(PyAqueductError):
+    """Operation forbidden error."""
 
 
-class InterruptedDownloadException(AqueductException):
-    """Interrupted Download Exception"""
+class UnAuthorizedError(PyAqueductError):
+    """Unauthorized operation error."""
 
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = "Download failed as download was interrupted."
+
+class FileToUploadNotFoundError(PyAqueductError):
+    """File not found error."""
+
+
+class FileUploadError(PyAqueductError):
+    """Interrupted upload error."""
+
+
+class FileDownloadError(PyAqueductError):
+    """Interrupted download error."""
