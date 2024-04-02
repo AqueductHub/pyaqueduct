@@ -60,7 +60,7 @@ class AqueductClient(BaseModel):
             timeout: Response timeout in seconds.
 
         """
-        super().__init__(url=HttpUrl(url), timeout=timeout)
+        super().__init__(url=url, timeout=timeout)
 
         self._gql_client = Client(
             transport=HTTPXTransport(url=f"{url}/graphql", timeout=self.timeout)

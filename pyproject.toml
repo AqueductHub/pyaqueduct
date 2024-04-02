@@ -13,9 +13,9 @@ repository = "https://github.com/AqueductHub/pyaqueduct"
 python = ">= 3.8,< 3.12"
 requests = "^2.31"
 tqdm = "^4.66"
-httpx = "^0.25"
+httpx = ">=0.15,<0.25"
 types-tqdm = "^4.66"
-pydantic = "^2.5"
+pydantic = ">=1.10.13,<3.0.0"
 gql = {extras = ["httpx"], version = "^3.5"}
 
 
