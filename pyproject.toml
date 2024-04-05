@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyaqueduct"
-version = "0.0.5"
+version = "0.0.6"
 description = "Aqueduct Python Client Library"
 authors = ["Aqueduct Team <aqueduct@riverlane.com>"]
 license = "MIT"
