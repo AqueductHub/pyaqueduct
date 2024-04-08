@@ -17,6 +17,7 @@ httpx = ">=0.15,<0.25"
 types-tqdm = "^4.66"
 pydantic = ">=1.10.13,<3.0.0"
 gql = {extras = ["httpx"], version = "^3.5"}
+pydantic-settings = "^2.2.1"
 
 
 [tool.poetry.group.dev.dependencies]

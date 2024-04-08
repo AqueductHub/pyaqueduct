@@ -3,21 +3,24 @@
 import logging
 import os
 from datetime import date
-from http import HTTPStatus
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from gql import Client
 from gql.client import SyncClientSession
+from gql.transport import exceptions as gql_exceptions
 from gql.transport.httpx import HTTPXTransport
-from httpx import WriteTimeout, post, stream
+from httpx import TransportError, codes, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
 from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
 from pyaqueduct.exceptions import (
-    InterruptedDownloadException,
-    InterruptedUploadException,
+    FileDownloadError,
+    FileUploadError,
+    ForbiddenError,
+    RemoteOperationError,
+    UnAuthorizedError,
 )
 from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
@@ -32,11 +35,18 @@ from pyaqueduct.schemas.queries import (
 )
 
 
-class AqueductClientResponse(BaseModel):
-    """Response of methods of Aqueduct client"""
+def process_response_common(code: codes) -> None:
+    """Process common HTTP return codes."""
+    if code is codes.OK:
+        return
 
-    result: str
-    message: str
+    if code is codes.FORBIDDEN:
+        raise ForbiddenError("Operation is not allowed for the current user.") from None
+
+    if code is codes.UNAUTHORIZED:
+        raise UnAuthorizedError("API token couldn't be verified or is missing.") from None
+
+    raise RemoteOperationError("Remove operation failed.")
 
 
 class AqueductClient(BaseModel):
@@ -52,8 +62,9 @@ class AqueductClient(BaseModel):
     timeout: float
     _gql_client: Client = PrivateAttr()
     _session: SyncClientSession = PrivateAttr()
+    _headers: Dict[str, str] = PrivateAttr()
 
-    def __init__(self, url: str, timeout: float):
+    def __init__(self, url: str, timeout: float, api_token: Optional[str] = None):
         """
         Args:
             url: URL of the Aqueduct server endpoint.
@@ -61,19 +72,13 @@ class AqueductClient(BaseModel):
 
         """
         super().__init__(url=url, timeout=timeout)
+        self._headers = {"Authorization": f"Bearer {api_token}"} if api_token else {}
 
         self._gql_client = Client(
-            transport=HTTPXTransport(url=f"{url}/graphql", timeout=self.timeout)
+            transport=HTTPXTransport(
+                url=f"{url}/graphql", timeout=self.timeout, headers=self._headers
+            )
         )
-        self.connect()
-
-    def connect(self):
-        """Connect to GraphQL connect"""
-        self._session = self._gql_client.connect_sync()  # type: ignore
-
-    def close(self):
-        """Close connection with GraphQL client"""
-        self._gql_client.close_sync()
 
     def create_experiment(
         self, title: str, description: str, tags: Optional[List[str]] = None
@@ -89,11 +94,19 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment objects having all fields
         """
-
-        experiment = self._session.execute(
-            create_experiment_mutation,
-            variable_values={"title": title, "description": description, "tags": tags or []},
-        )
+        try:
+            experiment = self._gql_client.execute(
+                create_experiment_mutation,
+                variable_values={"title": title, "description": description, "tags": tags or []},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
         experiment_obj = ExperimentData.from_dict(
             experiment["createExperiment"]  # pylint: disable=unsubscriptable-object
@@ -121,14 +134,24 @@ class AqueductClient(BaseModel):
         if description and description == "":
             raise ValueError("Description cannot be an empty string")
 
-        experiment = self._session.execute(
-            update_experiment_mutation,
-            variable_values={
-                "experimentId": experiment_uuid,
-                "title": title,
-                "description": description,
-            },
-        )
+        try:
+            experiment = self._gql_client.execute(
+                update_experiment_mutation,
+                variable_values={
+                    "experimentId": experiment_uuid,
+                    "title": title,
+                    "description": description,
+                },
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
         experiment_obj = ExperimentData.from_dict(
             experiment["updateExperiment"]  # pylint: disable=unsubscriptable-object
         )
@@ -161,17 +184,26 @@ class AqueductClient(BaseModel):
         if limit <= 0:
             raise ValueError("Limit should be a positive number")
 
-        experiments = self._session.execute(
-            get_experiments_query,
-            variable_values={
-                "limit": limit,
-                "offset": offset,
-                "title": title,
-                "start_date": start_date,
-                "end_date": end_date,
-                "tags": tags or [],
-            },
-        )
+        try:
+            experiments = self._gql_client.execute(
+                get_experiments_query,
+                variable_values={
+                    "limit": limit,
+                    "offset": offset,
+                    "title": title,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "tags": tags or [],
+                },
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
         experiments_obj = ExperimentsInfo.from_dict(
             experiments["experiments"]  # pylint: disable=unsubscriptable-object
@@ -194,9 +226,18 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment object having all fields
         """
-        experiment = self._session.execute(
-            get_experiment_query, variable_values={"type": "UUID", "value": experiment_uuid}
-        )
+        try:
+            experiment = self._gql_client.execute(
+                get_experiment_query, variable_values={"type": "UUID", "value": experiment_uuid}
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
         experiment_obj = ExperimentData.from_dict(
             experiment["experiment"]  # pylint: disable=unsubscriptable-object
@@ -215,9 +256,18 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment object having all fields
         """
-        experiment = self._session.execute(
-            get_experiment_query, variable_values={"type": "ALIAS", "value": alias}
-        )
+        try:
+            experiment = self._gql_client.execute(
+                get_experiment_query, variable_values={"type": "ALIAS", "value": alias}
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
         experiment_obj = ExperimentData.from_dict(
             experiment["experiment"]  # pylint: disable=unsubscriptable-object
@@ -236,11 +286,20 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment having tag added
         """
+        try:
+            experiment = self._gql_client.execute(
+                add_tag_to_experiment_mutation,
+                variable_values={"experimentId": experiment_uuid, "tag": tag},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
-        experiment = self._session.execute(
-            add_tag_to_experiment_mutation,
-            variable_values={"experimentId": experiment_uuid, "tag": tag},
-        )
         experiment_obj = ExperimentData.from_dict(
             experiment["addTagToExperiment"]  # pylint: disable=unsubscriptable-object
         )
@@ -258,11 +317,19 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment having tag removed
         """
-
-        experiment = self._session.execute(
-            remove_tag_from_experiment_mutation,
-            variable_values={"experimentId": experiment_uuid, "tag": tag},
-        )
+        try:
+            experiment = self._gql_client.execute(
+                remove_tag_from_experiment_mutation,
+                variable_values={"experimentId": experiment_uuid, "tag": tag},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
         experiment_obj = ExperimentData.from_dict(
             experiment["removeTagFromExperiment"]  # pylint: disable=unsubscriptable-object
@@ -270,7 +337,40 @@ class AqueductClient(BaseModel):
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
-    def upload_file(self, experiment_uuid: UUID, file: str) -> AqueductClientResponse:
+    def get_tags(self, limit: int, offset: int, dangling: bool = True) -> TagsData:
+        """
+        Get a list of existing tags
+
+        Args:
+        - limit (int): Number of tags to be fetched
+        - offset (offset): Number of tags to skip
+        - dangling (bool): If tags not linked to any experiment should be included or not
+
+        Returns:
+        List[str]: A list of all existing tags
+        """
+        if limit <= 0:
+            raise ValueError("Limit cannot be 0")
+
+        try:
+            tags = self._gql_client.execute(
+                get_all_tags_query,
+                variable_values={"limit": limit, "offset": offset, "dangling": dangling},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
+        tags_obj = TagsData.from_dict(tags["tags"])  # pylint: disable=unsubscriptable-object
+        logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
+        return tags_obj
+
+    def upload_file(self, experiment_uuid: UUID, file: str) -> None:
         """
         Upload file to a specific experiment.
 
@@ -283,29 +383,22 @@ class AqueductClient(BaseModel):
 
         """
 
-        headers = {
-            "file_name": os.path.basename(file),
-        }
+        headers = {"file_name": os.path.basename(file), **self._headers}
 
         upload_url = f"{self.url}/files/{str(experiment_uuid)}"
         with open(file, "rb") as files:
             try:
-                resp = post(
+                response = post(
                     upload_url, headers=headers, timeout=self.timeout, files={"file": files}
                 )
-            except InterruptedUploadException as exception:
-                return AqueductClientResponse(result="failed", message=exception.message)
+            except TransportError as error:
+                raise FileUploadError(f"Couldn't upload {file} due to transport error.") from error
 
-        if resp.status_code != 200:
-            return AqueductClientResponse(
-                result="failed", message=f"Upload failed {HTTPStatus(resp.status_code).name}"
-            )
+        process_response_common(codes(response.status_code))
+
         logging.info("Successfully uploaded file {files}")
-        return AqueductClientResponse(result="success", message="File uploaded successfully")
 
-    def download_file(
-        self, experiment_uuid: UUID, file_name: str, destination_dir: str
-    ) -> AqueductClientResponse:
+    def download_file(self, experiment_uuid: UUID, file_name: str, destination_dir: str) -> None:
         """
         Download file from a specific experiment.
 
@@ -323,7 +416,9 @@ class AqueductClient(BaseModel):
 
         try:
             with open(destination, "wb") as download_file:
-                with stream("GET", download_url, timeout=self.timeout) as response:
+                with stream(
+                    "GET", download_url, timeout=self.timeout, headers=self._headers
+                ) as response:
                     total = int(response.headers["Content-Length"])
                     with tqdm(
                         total=total, unit_scale=True, unit_divisor=1024, unit="B"
@@ -334,36 +429,7 @@ class AqueductClient(BaseModel):
                             progress.update(response.num_bytes_downloaded - num_bytes_downloaded)
                             num_bytes_downloaded = response.num_bytes_downloaded
 
-        except InterruptedDownloadException as exception:
-            return AqueductClientResponse(result="failed", message=exception.message)
-
-        except WriteTimeout as exception:
-            return AqueductClientResponse(
-                result="failed", message=f"Timeout error for file download {exception}"
-            )
-
-        return AqueductClientResponse(result="success", message=f"File downloaded to {destination}")
-
-    def get_tags(self, limit: int, offset: int, dangling: bool = True) -> TagsData:
-        """
-        Get a list of existing tags
-
-        Args:
-        - limit (int): Number of tags to be fetched
-        - offset (offset): Number of tags to skip
-        - dangling (bool): If tags not linked to any experiment should be included or not
-
-        Returns:
-        List[str]: A list of all existing tags
-        """
-        if limit <= 0:
-            raise ValueError("Limit cannot be 0")
-
-        tags = self._session.execute(
-            get_all_tags_query,
-            variable_values={"limit": limit, "offset": offset, "dangling": dangling},
-        )
-
-        tags_obj = TagsData.from_dict(tags["tags"])  # pylint: disable=unsubscriptable-object
-        logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
-        return tags_obj
+        except Exception as error:
+            raise FileDownloadError(
+                f"Couldn't download {file_name} due to transport error."
+            ) from error

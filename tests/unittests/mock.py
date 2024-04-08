@@ -13,7 +13,7 @@ from pyaqueduct.schemas.queries import (
 )
 
 
-def patched_execute(self, query, variable_values):
+def patched_execute(self, query, variable_values, **kwargs):
     if query == create_experiment_mutation:
         return {
             "createExperiment": {
