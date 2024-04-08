@@ -73,6 +73,7 @@ class AqueductClient(BaseModel):
         """
         super().__init__(url=url, timeout=timeout)
         self._headers = {"Authorization": f"Bearer {api_token}"} if api_token else {}
+
         self._gql_client = Client(
             transport=HTTPXTransport(
                 url=f"{url}/graphql", timeout=self.timeout, headers=self._headers
