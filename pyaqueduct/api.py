@@ -53,7 +53,7 @@ class API(BaseModel):
         experiment_data = self._client.create_experiment(title=title, description=description)
         return Experiment(
             client=self._client,
-            id=experiment_data.id,
+            experiment_id=experiment_data.id,
             alias=experiment_data.alias,
             created_at=experiment_data.created_at,
         )
@@ -71,7 +71,7 @@ class API(BaseModel):
         experiment_data = self._client.get_experiment_by_alias(alias=alias)
         return Experiment(
             client=self._client,
-            id=experiment_data.id,
+            experiment_id=experiment_data.id,
             alias=experiment_data.alias,
             created_at=experiment_data.created_at,
         )
@@ -92,7 +92,7 @@ class API(BaseModel):
         return [
             Experiment(
                 client=self._client,
-                id=experiment.id,
+                experiment_id=experiment.id,
                 alias=experiment.alias,
                 created_at=experiment.created_at,
             )
