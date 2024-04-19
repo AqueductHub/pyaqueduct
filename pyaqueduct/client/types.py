@@ -1,7 +1,8 @@
 """Dataclasses for experiment and it's components"""
+
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List
+from typing import List, cast
 from uuid import UUID
 
 
@@ -46,8 +47,9 @@ class ExperimentData:
             tags=data["tags"],
             alias=data["alias"],
             files=[ExperimentFile.from_dict(file_data) for file_data in data["files"]],
-            created_at=datetime.fromisoformat(data["createdAt"]),
-            updated_at=datetime.fromisoformat(data["updatedAt"]),
+            # fix timezone to work in Python versions older than 3.11.
+            created_at=datetime.fromisoformat(cast(str, data["createdAt"]).replace("Z", "+00:00")),
+            updated_at=datetime.fromisoformat(cast(str, data["updatedAt"]).replace("Z", "+00:00")),
         )
 
 
