@@ -44,7 +44,7 @@ class Experiment(BaseModel):
     @property
     def title(self) -> str:
         """Get title of experiment."""
-        return self._client.get_experiment(experiment_uuid=str(self.id)).title
+        return self._client.get_experiment(experiment_uuid=self.id).title
 
     @title.setter
     def title(self, value: str = Field(..., max_length=_MAX_TITLE_LENGTH)) -> None:
@@ -54,12 +54,12 @@ class Experiment(BaseModel):
             value: New title.
 
         """
-        self._client.update_experiment(experiment_uuid=str(self.id), title=value)
+        self._client.update_experiment(experiment_uuid=self.id, title=value)
 
     @property
     def description(self) -> str:
         """Get description of experiment."""
-        return self._client.get_experiment(str(self.id)).description
+        return self._client.get_experiment(self.id).description
 
     @description.setter
     def description(self, value: str = Field(..., max_length=_MAX_DESCRIPTION_LENGTH)) -> None:
@@ -69,12 +69,12 @@ class Experiment(BaseModel):
             value: New description.
 
         """
-        self._client.update_experiment(experiment_uuid=str(self.id), description=value)
+        self._client.update_experiment(experiment_uuid=self.id, description=value)
 
     @property
     def tags(self) -> List[str]:
         """Gets tags of experiment."""
-        return self._client.get_experiment(str(self.id)).tags
+        return self._client.get_experiment(self.id).tags
 
     def add_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
         """Add new tag to experiment."""
@@ -83,18 +83,17 @@ class Experiment(BaseModel):
                 f"Tag {tag} should only contain alphanumeric characters, underscores or hyphens"
             )
 
-        self._client.add_tag_to_experiment(experiment_uuid=str(self.id), tag=tag)
+        self._client.add_tag_to_experiment(experiment_uuid=self.id, tag=tag)
 
     def remove_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
         """Remove tag from experiment."""
-        self._client.remove_tag_from_experiment(experiment_uuid=str(self.id), tag=tag)
+        self._client.remove_tag_from_experiment(experiment_uuid=self.id, tag=tag)
 
     @property
     def files(self) -> List[Tuple[str, datetime]]:
         """Get file names of expriment."""
         return [
-            (item.name, item.modified_at)
-            for item in self._client.get_experiment(str(self.id)).files
+            (item.name, item.modified_at) for item in self._client.get_experiment(self.id).files
         ]
 
     def download_file(self, file_name: str, destination_dir: str) -> None:
@@ -108,4 +107,4 @@ class Experiment(BaseModel):
     @property
     def updated_at(self) -> datetime:
         """Get last updated datetime of the experiment."""
-        return self._client.get_experiment(str(self.id)).updated_at
+        return self._client.get_experiment(self.id).updated_at
