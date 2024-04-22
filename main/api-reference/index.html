@@ -535,7 +535,7 @@
           </td>
           <td>
             <div class="doc-md-description">
-              <p>timeout of operations in seconds.</p>
+              <p>Timeout of operations in seconds.</p>
             </div>
           </td>
           <td>
@@ -680,11 +680,39 @@
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Search string to match.</p>
+              <p>The string to search for in the title field of experiments.</p>
             </div>
           </td>
           <td>
               <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>limit</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The maximum number of experiments to fetch in a single request.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>offset</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of experiments to skip from the beginning of the search results.</p>
+            </div>
+          </td>
+          <td>
+                <code>0</code>
           </td>
         </tr>
     </tbody>
@@ -747,12 +775,13 @@
     </thead>
     <tbody>
         <tr>
-          <td><code>experiment_id</code></td>
+          <td><code>alias</code></td>
           <td>
+                <code>str</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>ID of the specified experiment.</p>
+              <p>Alias of the specified experiment.</p>
             </div>
           </td>
           <td>
