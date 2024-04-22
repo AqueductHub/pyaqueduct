@@ -47,9 +47,8 @@ class ExperimentData:
             tags=data["tags"],
             alias=data["alias"],
             files=[ExperimentFile.from_dict(file_data) for file_data in data["files"]],
-            # fix timezone to work in Python versions older than 3.11.
-            created_at=datetime.fromisoformat(cast(str, data["createdAt"]).replace("Z", "+00:00")),
-            updated_at=datetime.fromisoformat(cast(str, data["updatedAt"]).replace("Z", "+00:00")),
+            created_at=datetime.fromisoformat(data["createdAt"]),
+            updated_at=datetime.fromisoformat(data["updatedAt"]),
         )
 
 
