@@ -16,7 +16,7 @@ class API(BaseModel):
 
     Args:
         url: URL of the Aqueduct server including the prefix.
-        timeout: timeout of operations in seconds.
+        timeout: Timeout of operations in seconds.
 
     """
 
@@ -62,7 +62,7 @@ class API(BaseModel):
         """Get the experiment by the specified identifier to operate on.
 
         Args:
-            experiment_id: ID of the specified experiment.
+            alias: Alias of the specified experiment.
 
         Returns:
             Experiment object to interact with the experiment data.
@@ -80,7 +80,9 @@ class API(BaseModel):
         """Find the experiments that have the search criteria in their title or id.
 
         Args:
-            search: Search string to match.
+            search: The string to search for in the title field of experiments.
+            limit: The maximum number of experiments to fetch in a single request.
+            offset: The number of experiments to skip from the beginning of the search results.
 
         Returns:
             List of experiment objects to operate on their data.
