@@ -27,7 +27,7 @@ def test_create_experiment(monkeypatch):
 
 
 def test_update_experiment(monkeypatch):
-    experiment_uuid = f"{uuid4()}"
+    experiment_uuid = uuid4()
     expected_title = "test title"
     expected_description = "test description"
     expected_tags = []
@@ -55,7 +55,7 @@ def test_get_experiment(monkeypatch):
 
     client = AqueductClient(url="http://test.com", timeout=1)
 
-    experiment = client.get_experiment(str(experiment_id))
+    experiment = client.get_experiment(experiment_id)
     assert experiment.title == expected_title
     assert experiment.description == expected_description
     assert experiment.tags == expected_tags
@@ -86,7 +86,7 @@ def test_add_tag_to_experiment(monkeypatch):
 
     client = AqueductClient(url="http://test.com", timeout=1)
 
-    experiment = client.add_tag_to_experiment(experiment_uuid=f"{experiment_id}", tag=tag_name)
+    experiment = client.add_tag_to_experiment(experiment_uuid=experiment_id, tag=tag_name)
 
     assert tag_name in experiment.tags
 
@@ -99,7 +99,7 @@ def test_remove_tag_from_experiment(monkeypatch):
 
     client = AqueductClient(url="http://test.com", timeout=1)
 
-    experiment = client.remove_tag_from_experiment(experiment_uuid=f"{experiment_id}", tag=tag_name)
+    experiment = client.remove_tag_from_experiment(experiment_uuid=experiment_id, tag=tag_name)
 
     assert tag_name not in experiment.tags
 

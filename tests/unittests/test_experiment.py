@@ -3,12 +3,7 @@ from collections import namedtuple
 from datetime import datetime
 from uuid import uuid4
 
-from pyaqueduct.client import (
-    AqueductClient,
-    ExperimentData,
-    ExperimentFile,
-    ExperimentsInfo,
-)
+from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentFile
 from pyaqueduct.experiment import Experiment
 
 
@@ -46,7 +41,7 @@ def test_experiment_title(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        id=expected_id,
+        experiment_id=expected_id,
         alias=expected_alias,
         created_at=datetime.now(),
     )
@@ -89,7 +84,7 @@ def test_experiment_description(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        id=expected_id,
+        experiment_id=expected_id,
         alias=expected_alias,
         created_at=datetime.now(),
     )
@@ -151,7 +146,7 @@ def test_experiment_tags(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        id=expected_id,
+        experiment_id=expected_id,
         alias=expected_alias,
         created_at=datetime.now(),
     )
@@ -202,7 +197,7 @@ def test_experiment_files(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        id=expected_id,
+        experiment_id=expected_id,
         alias=expected_alias,
         created_at=datetime.now(),
     )

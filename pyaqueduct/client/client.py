@@ -115,7 +115,7 @@ class AqueductClient(BaseModel):
         return experiment_obj
 
     def update_experiment(
-        self, experiment_uuid: str, title: Optional[str] = None, description: Optional[str] = None
+        self, experiment_uuid: UUID, title: Optional[str] = None, description: Optional[str] = None
     ) -> ExperimentData:
         """
         Update title or description or both for experiment
@@ -138,7 +138,7 @@ class AqueductClient(BaseModel):
             experiment = self._gql_client.execute(
                 update_experiment_mutation,
                 variable_values={
-                    "experimentId": experiment_uuid,
+                    "experimentId": str(experiment_uuid),
                     "title": title,
                     "description": description,
                 },
@@ -215,7 +215,7 @@ class AqueductClient(BaseModel):
         )
         return experiments_obj
 
-    def get_experiment(self, experiment_uuid: str) -> ExperimentData:
+    def get_experiment(self, experiment_uuid: UUID) -> ExperimentData:
         """
         Get an Experiment by ID or Alias
 
@@ -228,7 +228,8 @@ class AqueductClient(BaseModel):
         """
         try:
             experiment = self._gql_client.execute(
-                get_experiment_query, variable_values={"type": "UUID", "value": experiment_uuid}
+                get_experiment_query,
+                variable_values={"type": "UUID", "value": str(experiment_uuid)},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -275,7 +276,7 @@ class AqueductClient(BaseModel):
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
-    def add_tag_to_experiment(self, experiment_uuid: str, tag: str) -> ExperimentData:
+    def add_tag_to_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
         """
         Add a tag to an experiment
 
@@ -289,7 +290,7 @@ class AqueductClient(BaseModel):
         try:
             experiment = self._gql_client.execute(
                 add_tag_to_experiment_mutation,
-                variable_values={"experimentId": experiment_uuid, "tag": tag},
+                variable_values={"experimentId": str(experiment_uuid), "tag": tag},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -306,7 +307,7 @@ class AqueductClient(BaseModel):
         logging.info("Added tag %s to experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
-    def remove_tag_from_experiment(self, experiment_uuid: str, tag: str) -> ExperimentData:
+    def remove_tag_from_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
         """
         Remove a tag from an experiment
 
@@ -320,7 +321,7 @@ class AqueductClient(BaseModel):
         try:
             experiment = self._gql_client.execute(
                 remove_tag_from_experiment_mutation,
-                variable_values={"experimentId": experiment_uuid, "tag": tag},
+                variable_values={"experimentId": str(experiment_uuid), "tag": tag},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
