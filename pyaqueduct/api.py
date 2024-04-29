@@ -105,8 +105,8 @@ class API(BaseModel):
             limit: The maximum number of experiments to fetch in a single request.
             offset: The number of experiments to skip from the beginning of the search results.
             tags: List of tags to filter the experiments by.
-            start_datetime: Start datetime to filter the experiments after this date and time (Timezone aware).
-            end_datetime: End datetime to filter the experiments before this date and time (Timezone aware).
+            start_datetime: Start datetime to filter the experiments after this date and time.
+            end_datetime: End datetime to filter the experiments before this date and time.
 
         Returns:
             List of experiment objects to operate on their data.
