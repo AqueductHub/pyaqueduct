@@ -13,6 +13,7 @@ from pydantic import (
     PositiveFloat,
     PositiveInt,
     PrivateAttr,
+    validate_call,
 )
 
 from pyaqueduct.client import AqueductClient
@@ -43,6 +44,7 @@ class API(BaseModel):
 
         self._client = AqueductClient(url=api_url, timeout=timeout, api_token=Settings().api_token)
 
+    @validate_call
     def create_experiment(
         self,
         title: str = Field(..., min_length=1, max_length=_MAX_TITLE_LENGTH),
@@ -67,6 +69,7 @@ class API(BaseModel):
             created_at=experiment_data.created_at,
         )
 
+    @validate_call
     def get_experiment(self, alias: str) -> Experiment:
         """Get the experiment by the specified identifier to operate on.
 
@@ -85,6 +88,7 @@ class API(BaseModel):
             created_at=experiment_data.created_at,
         )
 
+    @validate_call
     def find_experiments(
         self,
         search: Optional[str] = None,
