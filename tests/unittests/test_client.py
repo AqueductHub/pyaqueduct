@@ -1,4 +1,5 @@
 import tempfile
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -69,6 +70,59 @@ def test_get_experiments(monkeypatch):
     client = AqueductClient(url="http://test.com", timeout=1)
 
     experiments = client.get_experiments(limit=7, offset=0)
+    assert len(experiments.experiments) == expected_number_of_experiments
+
+    assert experiments.experiments[0].title == "test title 1"
+    assert experiments.experiments[0].description == "test description 1"
+
+    assert experiments.experiments[1].title == "test title 2"
+    assert experiments.experiments[1].description == "test description 2"
+
+
+def test_get_experiments_with_filters(monkeypatch):
+    expected_number_of_experiments = 7
+
+    start_datetime = datetime.now()
+    end_datetime = start_datetime + timedelta(hours=1)
+    tags = ["tag1", "tag2"]
+
+    title = "search text"
+
+    def patched_execute(self, query, variable_values, **kwargs):
+        if variable_values["title"]:
+            assert variable_values["title"] == title
+        if variable_values["startDate"]:
+            assert variable_values["startDate"] == start_datetime.isoformat()
+        if variable_values["endDate"]:
+            assert variable_values["endDate"] == end_datetime.isoformat()
+        if variable_values["tags"]:
+            assert variable_values["tags"] == tags
+        return {
+            "experiments": {
+                "experimentsData": [
+                    {
+                        "id": f"{uuid4()}",
+                        "title": f"test title {idx}",
+                        "description": f"test description {idx}",
+                        "alias": f"230101-0{idx}",
+                        "tags": [],
+                        "createdAt": "2023-01-01T00:00:00",
+                        "updatedAt": "2023-01-01T00:00:00",
+                        "files": [],
+                    }
+                    for idx in range(1, expected_number_of_experiments + 1)
+                ],
+                "totalExperimentsCount": expected_number_of_experiments,
+            }
+        }
+
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+
+    client = AqueductClient(url="http://test.com", timeout=1)
+
+    experiments = client.get_experiments(
+        title=title, limit=10, offset=10, start_datetime=start_datetime, end_datetime=end_datetime
+    )
     assert len(experiments.experiments) == expected_number_of_experiments
 
     assert experiments.experiments[0].title == "test title 1"

@@ -1,4 +1,5 @@
 """Aqueduct GraphQL Query schemas"""
+
 from gql import gql
 
 get_experiments_query = gql(
@@ -6,15 +7,17 @@ get_experiments_query = gql(
     query GetExperiments (
         $limit: Int!,
         $offset: Int!,
-        $title: String = "",
-        $startDate: Date = null,
-        $endDate: Date = null,
+        $title: String = null,
+        $startDate: DateTime = null,
+        $endDate: DateTime = null,
+        $tags: [String!] = null
     ) {
         experiments (
             filters: {
                 title: $title,
                 startDate: $startDate,
                 endDate: $endDate,
+                tags: $tags
             }
             limit: $limit,
             offset: $offset,
