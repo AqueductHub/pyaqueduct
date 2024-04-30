@@ -145,6 +145,20 @@ def test_add_tag_to_experiment(monkeypatch):
     assert tag_name in experiment.tags
 
 
+def test_remove_experiment(monkeypatch):
+    experiment_id = uuid4()
+
+    def patched_execute(self, query, variable_values, **kwargs):
+        if variable_values["experimentId"]:
+            assert variable_values["experimentId"] == str(experiment_id)
+
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+
+    client = AqueductClient(url="http://test.com", timeout=1)
+
+    client.remove_experiment(experiment_uuid=experiment_id)
+
+
 def test_remove_tag_from_experiment(monkeypatch):
     experiment_id = uuid4()
     tag_name = "tag"
