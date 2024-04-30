@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.19">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
     
     
       
@@ -642,14 +642,14 @@
 
 
 <h3 id="pyaqueduct.API.find_experiments" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">find_experiments</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">find_experiments</span><span class="p">(</span><span class="n">search</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_datetime</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#pyaqueduct.API.find_experiments" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
   
-      <p>Find the experiments that have the search criteria in their title or id.</p>
+      <p>Find the experiments that have the search criteria provided in arguments.</p>
 
 
 
@@ -667,7 +667,7 @@
         <tr class="doc-section-item">
           <td><code>search</code></td>
           <td>
-                <code>str</code>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -675,13 +675,13 @@
             </div>
           </td>
           <td>
-              <em>required</em>
+                <code>None</code>
           </td>
         </tr>
         <tr class="doc-section-item">
           <td><code>limit</code></td>
           <td>
-                <code>int</code>
+                <code><span title="pydantic.PositiveInt">PositiveInt</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -689,13 +689,13 @@
             </div>
           </td>
           <td>
-              <em>required</em>
+                <code>10</code>
           </td>
         </tr>
         <tr class="doc-section-item">
           <td><code>offset</code></td>
           <td>
-                <code>int</code>
+                <code><span title="pydantic.NonNegativeInt">NonNegativeInt</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -704,6 +704,48 @@
           </td>
           <td>
                 <code>0</code>
+          </td>
+        </tr>
+        <tr class="doc-section-item">
+          <td><code>tags</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[str]]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>List of tags to filter the experiments by.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr class="doc-section-item">
+          <td><code>start_datetime</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Start datetime to filter the experiments after this date and time.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr class="doc-section-item">
+          <td><code>end_datetime</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>End datetime to filter the experiments before this date and time.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
           </td>
         </tr>
     </tbody>
