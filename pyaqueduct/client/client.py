@@ -2,7 +2,7 @@
 
 import logging
 import os
-from datetime import date
+from datetime import datetime
 from typing import Dict, List, Optional
 from uuid import UUID
 
@@ -164,22 +164,23 @@ class AqueductClient(BaseModel):
         offset: int,
         title: Optional[str] = None,
         tags: Optional[List[str]] = None,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_datetime: Optional[datetime] = None,
+        end_datetime: Optional[datetime] = None,
     ) -> ExperimentsInfo:
         """
         Get a list of experiments
 
         Args:
-        - limit (int): Number of experiments to be fetched
-        - offset (offset): Number of experiments to skip
-        - title (str): Perform search on experiments through title
-        - tags (List[str]): Get experiments having these tags
-        - start_date (date): Start date to filter experiments
-        - end_date (date): End date to filter experiments to
+        - limit: Pagination field, number of experiments to be fetched.
+        - offset: Pagination field, number of experiments to skip.
+        - title: Perform search on experiments through their title and alias.
+        - tags: Get experiments that have these tags.
+        - start_date: Start datetime to filter experiments (timezone aware).
+        - end_date: End datetime to filter experiments to (timezone aware).
 
         Returns:
-        List[Experiment]: A list of experiments with filters applied
+            List of experiments with filters applied
+
         """
         if limit <= 0:
             raise ValueError("Limit should be a positive number")
@@ -191,9 +192,9 @@ class AqueductClient(BaseModel):
                     "limit": limit,
                     "offset": offset,
                     "title": title,
-                    "start_date": start_date,
-                    "end_date": end_date,
-                    "tags": tags or [],
+                    "startDate": start_datetime.isoformat() if start_datetime else None,
+                    "endDate": end_datetime.isoformat() if end_datetime else None,
+                    "tags": tags,
                 },
             )
         except gql_exceptions.TransportServerError as error:

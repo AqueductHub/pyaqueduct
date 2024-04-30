@@ -7,7 +7,7 @@ from re import compile as recompile
 from typing import List, Tuple
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validate_call
 
 from pyaqueduct.client import AqueductClient
 
@@ -47,6 +47,7 @@ class Experiment(BaseModel):
         return self._client.get_experiment(experiment_uuid=self.id).title
 
     @title.setter
+    @validate_call
     def title(self, value: str = Field(..., max_length=_MAX_TITLE_LENGTH)) -> None:
         """Set title of experiment.
 
@@ -62,6 +63,7 @@ class Experiment(BaseModel):
         return self._client.get_experiment(self.id).description
 
     @description.setter
+    @validate_call
     def description(self, value: str = Field(..., max_length=_MAX_DESCRIPTION_LENGTH)) -> None:
         """Set description of experiment.
 
@@ -76,6 +78,7 @@ class Experiment(BaseModel):
         """Gets tags of experiment."""
         return self._client.get_experiment(self.id).tags
 
+    @validate_call
     def add_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
         """Add new tag to experiment."""
         if not is_valid_tag(tag):
@@ -85,6 +88,7 @@ class Experiment(BaseModel):
 
         self._client.add_tag_to_experiment(experiment_uuid=self.id, tag=tag)
 
+    @validate_call
     def remove_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
         """Remove tag from experiment."""
         self._client.remove_tag_from_experiment(experiment_uuid=self.id, tag=tag)
@@ -96,10 +100,12 @@ class Experiment(BaseModel):
             (item.name, item.modified_at) for item in self._client.get_experiment(self.id).files
         ]
 
+    @validate_call
     def download_file(self, file_name: str, destination_dir: str) -> None:
         """Download the specified file of experiment."""
         self._client.download_file(self.id, file_name=file_name, destination_dir=destination_dir)
 
+    @validate_call
     def upload_file(self, file: str) -> None:
         """Upload the specified file to experiment."""
         self._client.upload_file(self.id, file=file)

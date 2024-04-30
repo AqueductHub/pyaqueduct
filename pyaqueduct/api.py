@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
-from pydantic import BaseModel, Field, HttpUrl, PositiveFloat, PrivateAttr
+from pydantic import (
+    BaseModel,
+    Field,
+    HttpUrl,
+    NonNegativeInt,
+    PositiveFloat,
+    PositiveInt,
+    PrivateAttr,
+    validate_call,
+)
 
 from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
@@ -34,6 +44,7 @@ class API(BaseModel):
 
         self._client = AqueductClient(url=api_url, timeout=timeout, api_token=Settings().api_token)
 
+    @validate_call
     def create_experiment(
         self,
         title: str = Field(..., min_length=1, max_length=_MAX_TITLE_LENGTH),
@@ -58,6 +69,7 @@ class API(BaseModel):
             created_at=experiment_data.created_at,
         )
 
+    @validate_call
     def get_experiment(self, alias: str) -> Experiment:
         """Get the experiment by the specified identifier to operate on.
 
@@ -76,20 +88,37 @@ class API(BaseModel):
             created_at=experiment_data.created_at,
         )
 
-    def find_experiments(self, search: str, limit: int, offset: int = 0) -> List[Experiment]:
-        """Find the experiments that have the search criteria in their title or id.
+    @validate_call
+    def find_experiments(
+        self,
+        search: Optional[str] = None,
+        limit: PositiveInt = 10,
+        offset: NonNegativeInt = 0,
+        tags: Optional[List[str]] = None,
+        start_datetime: Optional[datetime] = None,
+        end_datetime: Optional[datetime] = None,
+    ) -> List[Experiment]:
+        """Find the experiments that have the search criteria provided in arguments.
 
         Args:
             search: The string to search for in the title field of experiments.
             limit: The maximum number of experiments to fetch in a single request.
             offset: The number of experiments to skip from the beginning of the search results.
+            tags: List of tags to filter the experiments by.
+            start_datetime: Start datetime to filter the experiments after this date and time.
+            end_datetime: End datetime to filter the experiments before this date and time.
 
         Returns:
             List of experiment objects to operate on their data.
 
         """
         experiments = self._client.get_experiments(
-            title=search, limit=limit, offset=offset
+            title=search,
+            limit=limit,
+            offset=offset,
+            tags=tags,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
         ).experiments
         return [
             Experiment(

@@ -76,7 +76,7 @@ def test_find_experiments(monkeypatch):
         )
         experiments_list.append(new_experiment)
 
-    def patched_get_experiments(self, title, limit, offset):
+    def patched_get_experiments(self, title, limit, offset, tags, start_datetime, end_datetime):
         return ExperimentsInfo(
             experiments=[
                 ExperimentData(
