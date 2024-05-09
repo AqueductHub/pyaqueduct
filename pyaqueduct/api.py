@@ -89,7 +89,7 @@ class API(BaseModel):
         )
 
     @validate_call
-    def remove_experiment(self, alias: str) -> None:
+    def remove_experiment_by_alias(self, alias: str) -> None:
         """Remove experiment from the database. Experiment's files will be also removed.
 
         Args:

@@ -90,7 +90,7 @@ def test_remove_experiment_by_alias(monkeypatch):
     monkeypatch.setattr(AqueductClient, "remove_experiment", patched_remove_experiment)
     api = API(url="http://test.com", timeout=1)
 
-    api.remove_experiment(alias=expected_alias)
+    api.remove_experiment_by_alias(alias=expected_alias)
 
 
 def test_find_experiments(monkeypatch):
