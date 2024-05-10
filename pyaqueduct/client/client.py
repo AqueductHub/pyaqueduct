@@ -440,6 +440,11 @@ class AqueductClient(BaseModel):
             ) from error
 
     def get_plugins(self) -> List[PluginData]:
+        """ Get the list of plugins from the server.
+
+        Returns:
+            List of plugin objects.
+        """
         try:
             plugins = self._gql_client.execute(
                 get_all_plugins_query,
@@ -457,7 +462,22 @@ class AqueductClient(BaseModel):
         logging.info("Fetched %s plugins", len(plugins))
         return plugins
 
-    def execute_plugin_function(self, plugin: str, function: str, params: Dict[str, Any]) -> PluginExecutionResultData:
+    def execute_plugin_function(
+            self, plugin: str, function: str, params: Dict[str, Any]) -> PluginExecutionResultData:
+        """ Executes plugin function on a server.
+
+        Args:
+            plugin: plugin name.
+            function: function name within a plugin.
+            params (Dict[str, Any]): dictionary with parameters passed to a plugin.
+
+        Raises:
+            RemoteOperationError: Communication error.
+
+        Returns:
+            PluginExecutionResultData:
+                Plugin execution result, `returnCode==0` corresponds to success.
+        """
         try:
             params_list = [[k, str(v)] for k, v in params.items()]
             plugin_result = self._gql_client.execute(

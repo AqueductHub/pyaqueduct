@@ -118,3 +118,13 @@ def test_get_plugins(monkeypatch):
     assert plugins[0].functions[0].parameters[-1].dataType == "select"
     assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
     assert isinstance(plugins[0].functions[0].parameters[0], PluginParameter)
+
+
+def test_execute_plugin_function(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    api = API(url="http://test.com", timeout=1)
+    plugins = api.get_plugins()
+    result = plugins[0].functions[0].execute({"var1": 1})
+    assert result.returnCode == 0
+    assert result.stdout != ""
+    assert result.stderr == ""

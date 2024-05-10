@@ -190,7 +190,9 @@ def test_execute_plugin_function(monkeypatch):
             "var3": False,
         }
     )
-    exec_result
+    assert exec_result.returnCode == 0
+    assert exec_result.stdout != ""
+    assert exec_result.stderr == ""
 
 
 @patch("pyaqueduct.client.client.post")
