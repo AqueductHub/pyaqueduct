@@ -126,7 +126,7 @@ execute_plugin_function_mutation = gql(
     mutation ExecutePlugin (
         $plugin: String!,
         $function: String!,
-        $params: [[String]]!,
+        $params: [[String!]!]!,
     ) {
         executePlugin(
             params: $params,
