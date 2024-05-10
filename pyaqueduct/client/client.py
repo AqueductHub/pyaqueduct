@@ -25,6 +25,7 @@ from pyaqueduct.exceptions import (
 from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
     create_experiment_mutation,
+    remove_experiment_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
@@ -84,15 +85,15 @@ class AqueductClient(BaseModel):
         self, title: str, description: str, tags: Optional[List[str]] = None
     ) -> ExperimentData:
         """
-        Create an experiment with title, description and list of tags
+        Create an experiment with title, description and list of tags.
 
         Args:
-        - title (str): Title of experiment
-        - description (str): Description of experiment
-        - tags (List[str]): List of tags to be assigned to experiment
+            title: Title of experiment.
+            description: Description of experiment.
+            tags: List of tags to be assigned to experiment.
 
         Returns:
-        Experiment: Experiment objects having all fields
+            Experiment object.
         """
         try:
             experiment = self._gql_client.execute(
@@ -118,15 +119,16 @@ class AqueductClient(BaseModel):
         self, experiment_uuid: UUID, title: Optional[str] = None, description: Optional[str] = None
     ) -> ExperimentData:
         """
-        Update title or description or both for experiment
+        Update title or description or both for experiment.
 
         Args:
-        - experiment_uuid (UUID): UUID of experiment to be updated
-        - title (str): New title of experiment
-        - description (str): New description of experiment
+            experiment_uuid: UUID of experiment.
+            title: New title of experiment.
+            description: New description of experiment.
 
         Returns:
-        Experiment: Experiment object with updated fields
+            Experiment object.
+
         """
         if title and title == "":
             raise ValueError("Title cannot be an empty string")
@@ -171,15 +173,15 @@ class AqueductClient(BaseModel):
         Get a list of experiments
 
         Args:
-        - limit: Pagination field, number of experiments to be fetched.
-        - offset: Pagination field, number of experiments to skip.
-        - title: Perform search on experiments through their title and alias.
-        - tags: Get experiments that have these tags.
-        - start_date: Start datetime to filter experiments (timezone aware).
-        - end_date: End datetime to filter experiments to (timezone aware).
+            limit: Pagination field, number of experiments to be fetched.
+            offset: Pagination field, number of experiments to skip.
+            title: Perform search on experiments through their title and alias.
+            tags: Get experiments that have these tags.
+            start_date: Start datetime to filter experiments (timezone aware).
+            end_date: End datetime to filter experiments to (timezone aware).
 
         Returns:
-            List of experiments with filters applied
+            List of experiments with filters applied.
 
         """
         if limit <= 0:
@@ -218,14 +220,14 @@ class AqueductClient(BaseModel):
 
     def get_experiment(self, experiment_uuid: UUID) -> ExperimentData:
         """
-        Get an Experiment by ID or Alias
+        Get an Experiment by UUID.
 
         Args:
-        - id_ (str): "UUID | ALIAS" Unique identifier to be used
-        - value (str): Value of unique identifier to use for fetching experiment
+            experiment_uuid: UUID of experiment.
 
         Returns:
-        Experiment: Experiment object having all fields
+            Experiment object.
+
         """
         try:
             experiment = self._gql_client.execute(
@@ -249,14 +251,14 @@ class AqueductClient(BaseModel):
 
     def get_experiment_by_alias(self, alias: str) -> ExperimentData:
         """
-        Get an Experiment by ID or Alias
+        Get an Experiment by Alias.
 
         Args:
-        - id_ (str): "UUID | ALIAS" Unique identifier to be used
-        - value (str): Value of unique identifier to use for fetching experiment
+            alias: Experiment's alias.
 
         Returns:
-        Experiment: Experiment object having all fields
+            Updated experiment.
+
         """
         try:
             experiment = self._gql_client.execute(
@@ -282,11 +284,12 @@ class AqueductClient(BaseModel):
         Add a tag to an experiment
 
         Args:
-        - experiment_uuid (UUID): UUID of experiment to which tag is to be added
-        - tag (str): Tag to be added to experiment
+            experiment_uuid: UUID of experiment.
+            tag: Tag to be added to experiment.
 
         Returns:
-        Experiment: Experiment having tag added
+            Updated experiment.
+
         """
         try:
             experiment = self._gql_client.execute(
@@ -307,6 +310,28 @@ class AqueductClient(BaseModel):
         )
         logging.info("Added tag %s to experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
+
+    def remove_experiment(self, experiment_uuid: UUID) -> None:
+        """
+        Remove experiment from the database. It removes the experiments files as well.
+
+        Args:
+            experiment_uuid: UUID of experiment.
+
+        """
+        try:
+            self._gql_client.execute(
+                remove_experiment_mutation,
+                variable_values={"experimentId": str(experiment_uuid)},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
 
     def remove_tag_from_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
         """

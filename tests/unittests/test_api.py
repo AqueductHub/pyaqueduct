@@ -64,6 +64,35 @@ def test_get_experiment_by_alias(monkeypatch):
     assert experiment.created_at == expected_datetime
 
 
+def test_remove_experiment_by_alias(monkeypatch):
+    expected_id = uuid4()
+    expected_title = "test title"
+    expected_description = "test description"
+    expected_alias = "mock_alias"
+    expected_datetime = datetime.now()
+
+    def patched_remove_experiment(self, experiment_uuid):
+        assert experiment_uuid == expected_id
+
+    def patched_get_experiment(self, alias):
+        assert alias == expected_alias
+
+        return ExperimentData(
+            id=expected_id,
+            title=expected_title,
+            description=expected_description,
+            alias=alias,
+            created_at=expected_datetime,
+            updated_at=expected_datetime,
+        )
+
+    monkeypatch.setattr(AqueductClient, "get_experiment_by_alias", patched_get_experiment)
+    monkeypatch.setattr(AqueductClient, "remove_experiment", patched_remove_experiment)
+    api = API(url="http://test.com", timeout=1)
+
+    api.remove_experiment_by_alias(alias=expected_alias)
+
+
 def test_find_experiments(monkeypatch):
     ExperimentMockData = namedtuple(
         "ExperimentData",

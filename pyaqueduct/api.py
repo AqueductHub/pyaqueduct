@@ -89,6 +89,17 @@ class API(BaseModel):
         )
 
     @validate_call
+    def remove_experiment_by_alias(self, alias: str) -> None:
+        """Remove experiment from the database. Experiment's files will be also removed.
+
+        Args:
+            alias: Alias of the specified experiment.
+
+        """
+        experiment_data = self._client.get_experiment_by_alias(alias=alias)
+        self._client.remove_experiment(experiment_uuid=experiment_data.id)
+
+    @validate_call
     def find_experiments(
         self,
         search: Optional[str] = None,

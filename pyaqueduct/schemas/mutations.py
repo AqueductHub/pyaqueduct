@@ -1,4 +1,5 @@
 """Aqueduct GraphQL Mutation schemas"""
+
 from gql import gql
 
 create_experiment_mutation = gql(
@@ -117,6 +118,16 @@ remove_tag_from_experiment_mutation = gql(
                 modifiedAt
             }
         }
+    }
+    """
+)
+
+remove_experiment_mutation = gql(
+    """
+    mutation RemoveTagFromExperiment (
+        $experimentId: UUID!
+        ) {
+        removeExperiment(experimentRemoveInput: {experimentId: $experimentId})
     }
     """
 )
