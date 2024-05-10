@@ -120,3 +120,25 @@ remove_tag_from_experiment_mutation = gql(
     }
     """
 )
+
+execute_plugin_function_mutation = gql(
+    """
+    mutation ExecutePlugin (
+        $plugin: String!,
+        $function: String!,
+        $params: [[String]]!,
+    ) {
+        executePlugin(
+            params: $params,
+            plugin: $plugin,
+            function: $function,
+        ) {
+            logExperiment
+            logFile
+            returnCode
+            stderr
+            stdout
+        }
+    }
+    """
+)

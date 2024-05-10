@@ -32,3 +32,14 @@ class PluginData(BaseModel):
     @classmethod
     def from_dict(cls, data: dict) -> PluginData:
         return PluginData(**data)
+
+
+class PluginExecutionResultData(BaseModel):
+    """Results of plugin execution """
+    returnCode: int
+    stdout: str
+    stderr: str
+
+    @classmethod
+    def from_dict(cls, data: dict) -> PluginExecutionResultData:
+        return PluginExecutionResultData(**data)

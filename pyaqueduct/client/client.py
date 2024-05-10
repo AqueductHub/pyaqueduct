@@ -3,7 +3,7 @@
 import logging
 import os
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from gql import Client
@@ -15,7 +15,7 @@ from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
 from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
-from pyaqueduct.client.plugin_types import PluginData
+from pyaqueduct.client.plugin_types import PluginData, PluginExecutionResultData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileUploadError,
@@ -26,6 +26,7 @@ from pyaqueduct.exceptions import (
 from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
     create_experiment_mutation,
+    execute_plugin_function_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
@@ -455,3 +456,29 @@ class AqueductClient(BaseModel):
         plugins = list(map(PluginData.from_dict, plugins["plugins"]))  # pylint: disable=unsubscriptable-object
         logging.info("Fetched %s plugins", len(plugins))
         return plugins
+
+    def execute_plugin_function(self, plugin: str, function: str, params: Dict[str, Any]) -> PluginExecutionResultData:
+        try:
+            params_list = [[k, str(v)] for k, v in params.items()]
+            plugin_result = self._gql_client.execute(
+                execute_plugin_function_mutation,
+                variable_values={
+                    "plugin": plugin,
+                    "function": function,
+                    "params": params_list,
+                }
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
+        result = PluginExecutionResultData.from_dict(plugin_result["executePlugin"])  # pylint: disable=unsubscriptable-object
+        logging.info(
+            "Executed a %s / %s plugin function with result code %d",
+            plugin, function, result.returnCode)
+        return result

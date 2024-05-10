@@ -178,6 +178,21 @@ def test_get_plugins(monkeypatch):
     assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
 
 
+def test_execute_plugin_function(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    client = AqueductClient(url="http://test.com", timeout=1)
+    exec_result = client.execute_plugin_function(
+        plugin="Dummy plugin",
+        function="echo",
+        params={
+            "var1": "a",
+            "var2": 1,
+            "var3": False,
+        }
+    )
+    exec_result
+
+
 @patch("pyaqueduct.client.client.post")
 def test_file_upload(fake_httpx_post):
     fake_httpx_post.return_value = Response(status_code=200)

@@ -3,6 +3,7 @@ from uuid import uuid4
 from pyaqueduct.schemas.mutations import (
     add_tag_to_experiment_mutation,
     create_experiment_mutation,
+    execute_plugin_function_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
@@ -260,4 +261,19 @@ def patched_execute(self, query, variable_values, **kwargs):
                     ]
                 },                
             ]
+        }
+
+    elif query == execute_plugin_function_mutation:
+        return  {
+            "executePlugin": {
+                "logExperiment": "234-4",
+                "logFile": "Dummy plugin-echo-20240510-135611.log",
+                "returnCode": 0,
+                "stderr": "",
+                "stdout": (
+                    "var1=a\nvar2=1\nvar3=1.0e-4\nvar4=234-4\n"
+                    "var5=text\ntext\nvar6=0\nvar7=string1\n"
+                    "dummykey=dummyvalue\n"
+                )
+            }
         }
