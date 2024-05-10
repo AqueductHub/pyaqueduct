@@ -168,6 +168,16 @@ def test_get_tags(monkeypatch):
     assert len(tags.tags) == 10
 
 
+def test_get_plugins(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    client = AqueductClient(url="http://test.com", timeout=1)
+    plugins = client.get_plugins()
+    assert len(plugins) == 1
+    assert len(plugins[0].functions) == 2
+    assert plugins[0].functions[0].parameters[-1].dataType == "select"
+    assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
+
+
 @patch("pyaqueduct.client.client.post")
 def test_file_upload(fake_httpx_post):
     fake_httpx_post.return_value = Response(status_code=200)

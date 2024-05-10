@@ -15,6 +15,7 @@ from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
 from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
+from pyaqueduct.client.plugin_types import PluginData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileUploadError,
@@ -29,6 +30,7 @@ from pyaqueduct.schemas.mutations import (
     update_experiment_mutation,
 )
 from pyaqueduct.schemas.queries import (
+    get_all_plugins_query,
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
@@ -435,3 +437,21 @@ class AqueductClient(BaseModel):
             raise FileDownloadError(
                 f"Couldn't download {file_name} due to transport error."
             ) from error
+
+    def get_plugins(self) -> List[PluginData]:
+        try:
+            plugins = self._gql_client.execute(
+                get_all_plugins_query,
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
+        plugins = list(map(PluginData.from_dict, plugins["plugins"]))  # pylint: disable=unsubscriptable-object
+        logging.info("Fetched %s plugins", len(plugins))
+        return plugins

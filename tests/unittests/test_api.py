@@ -3,6 +3,10 @@ from collections import namedtuple
 from datetime import datetime
 from uuid import uuid4
 
+from gql.client import SyncClientSession
+from tests.unittests.mock import patched_execute
+
+from pyaqueduct.plugin import Plugin, PluginFunction, PluginParameter
 from pyaqueduct.api import API
 from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
 
@@ -101,3 +105,16 @@ def test_find_experiments(monkeypatch):
         assert experiment.alias == expected_exp.expected_alias
         assert experiment.id == expected_exp.expected_id
         assert experiment.created_at == expected_exp.expected_datetime
+
+
+def test_get_plugins(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    api = API(url="http://test.com", timeout=1)
+    plugins = api.get_plugins()
+    assert len(plugins) == 1
+    assert isinstance(plugins[0], Plugin)
+    assert len(plugins[0].functions) == 2
+    assert isinstance(plugins[0].functions[0], PluginFunction)
+    assert plugins[0].functions[0].parameters[-1].dataType == "select"
+    assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
+    assert isinstance(plugins[0].functions[0].parameters[0], PluginParameter)

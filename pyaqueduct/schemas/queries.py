@@ -92,3 +92,24 @@ get_all_tags_query = gql(
     }
     """
 )
+
+get_all_plugins_query = gql(
+    """
+    query MyQuery {
+        plugins {
+            name, authors, description,
+            functions {
+                name, description, experimentVariableName,
+                parameters {
+                    name
+                    displayName
+                    description
+                    dataType
+                    defaultValue
+                    options
+                }
+            }
+        }
+    }
+    """
+)

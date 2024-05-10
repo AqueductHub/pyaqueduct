@@ -7,6 +7,7 @@ from pyaqueduct.schemas.mutations import (
     update_experiment_mutation,
 )
 from pyaqueduct.schemas.queries import (
+    get_all_plugins_query,
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
@@ -110,4 +111,153 @@ def patched_execute(self, query, variable_values, **kwargs):
                 "tagsData": [f"tag_{idx}" for idx in range(1, variable_values["limit"] + 1)],
                 "totalTagsCount": 15,
             }
+        }
+    
+    elif query == get_all_plugins_query:
+        return {
+            "plugins": [
+                {
+                    "name": "Dummy plugin",
+                    "authors": "aqueduct@riverlane.com",
+                    "description": "This plugin prints environment variables passed to it. No requests to Aqueduct sent.\n",
+                    "functions": [
+                        {
+                            "name": "echo",
+                            "description": "Print values to stdout",
+                            "experimentVariableName": "var4",
+                            "parameters": [
+                                {
+                                    "name": "var1",
+                                    "displayName": None,
+                                    "description": "variable 1",
+                                    "dataType": "str",
+                                    "defaultValue": "1",
+                                    "options": None
+                                },
+                                {
+                                    "name": "var2",
+                                    "displayName": "some display name",
+                                    "description": "variable 2",
+                                    "dataType": "int",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var3",
+                                    "displayName": None,
+                                    "description": "variable 3",
+                                    "dataType": "float",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var4",
+                                    "displayName": None,
+                                    "description": "variable 4",
+                                    "dataType": "experiment",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var5",
+                                    "displayName": None,
+                                    "description": "variable 5 multiline",
+                                    "dataType": "textarea",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var6",
+                                    "displayName": None,
+                                    "description": "boolean variable",
+                                    "dataType": "bool",
+                                    "defaultValue": "1",
+                                    "options": None
+                                },
+                                {
+                                    "name": "var7",
+                                    "displayName": None,
+                                    "description": "select / combobox",
+                                    "dataType": "select",
+                                    "defaultValue": "string three",
+                                    "options": [
+                                    "string1",
+                                    "string2",
+                                    "string three",
+                                    "string4"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "echo_stderr",
+                            "description": "Print values to stdout",
+                            "experimentVariableName": "var4",
+                            "parameters": [
+                                {
+                                    "name": "var1",
+                                    "displayName": None,
+                                    "description": "variable 1",
+                                    "dataType": "str",
+                                    "defaultValue": "1",
+                                    "options": None
+                                },
+                                {
+                                    "name": "var2",
+                                    "displayName": "some display name",
+                                    "description": "variable 2",
+                                    "dataType": "int",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var3",
+                                    "displayName": None,
+                                    "description": "variable 3",
+                                    "dataType": "float",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var4",
+                                    "displayName": None,
+                                    "description": "variable 4",
+                                    "dataType": "experiment",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var5",
+                                    "displayName": None,
+                                    "description": "variable 5 multiline",
+                                    "dataType": "textarea",
+                                    "defaultValue": None,
+                                    "options": None
+                                },
+                                {
+                                    "name": "var6",
+                                    "displayName": None,
+                                    "description": "boolean variable",
+                                    "dataType": "bool",
+                                    "defaultValue": "1",
+                                    "options": None
+                                },
+                                {
+                                    "name": "var7",
+                                    "displayName": None,
+                                    "description": "select / combobox",
+                                    "dataType": "select",
+                                    "defaultValue": "string three",
+                                    "options": [
+                                    "string1",
+                                    "string2",
+                                    "string three",
+                                    "string4"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },                
+            ]
         }
