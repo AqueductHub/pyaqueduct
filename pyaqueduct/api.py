@@ -140,6 +140,11 @@ class API(BaseModel):
             List of plugin objects.
         """
         return [
-            Plugin.from_data(plugin, self._client)
-            for plugin in self._client.get_plugins()
+            Plugin(
+                name=plugin_data.name,
+                description=plugin_data.description,
+                authors=plugin_data.authors,
+                functions=plugin_data.functions,
+                client=self._client)
+            for plugin_data in self._client.get_plugins()
         ]
