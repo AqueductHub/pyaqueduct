@@ -64,16 +64,16 @@ update_experiment_mutation = gql(
     """
 )
 
-add_tag_to_experiment_mutation = gql(
+add_tags_to_experiment_mutation = gql(
     """
     mutation AddTagToExperiment (
         $experimentId: UUID!,
-        $tag: String!
+        $tags: [String!]!
     ) {
-        addTagToExperiment (
-            experimentTagInput: {
+        addTagsToExperiment(
+            experimentTagsInput: {
                 experimentId: $experimentId,
-                tag: $tag
+                tags: $tags
             }
         ) {
             id

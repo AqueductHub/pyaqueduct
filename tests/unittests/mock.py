@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from pyaqueduct.schemas.mutations import (
-    add_tag_to_experiment_mutation,
+    add_tags_to_experiment_mutation,
     create_experiment_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
@@ -76,14 +76,14 @@ def patched_execute(self, query, variable_values, **kwargs):
             }
         }
 
-    elif query == add_tag_to_experiment_mutation:
+    elif query == add_tags_to_experiment_mutation:
         return {
-            "addTagToExperiment": {
+            "addTagsToExperiment": {
                 "id": variable_values["experimentId"],
                 "title": "test title",
                 "description": "test description",
                 "alias": "230101-01",
-                "tags": variable_values["tag"],
+                "tags": variable_values["tags"],
                 "files": [],
                 "createdAt": "2024-01-03T18:03:46.135824",
                 "updatedAt": "2024-01-03T18:03:46.135829",

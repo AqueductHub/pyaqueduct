@@ -112,9 +112,9 @@ def test_experiment_tags(monkeypatch):
             tags=expected_tags,
         )
 
-    def patched_add_tag_to_experiment(self, experiment_uuid, tag):
-        assert tag == "tag4"
-        expected_tags.append(tag)
+    def patched_add_tags_to_experiment(self, experiment_uuid, tags):
+        assert tags == ["tag4", "tag5"]
+        expected_tags.extend(tags)
         return ExperimentData(
             id=experiment_uuid,
             title=expected_title,
@@ -139,7 +139,7 @@ def test_experiment_tags(monkeypatch):
         )
 
     monkeypatch.setattr(AqueductClient, "get_experiment", patched_get_experiment)
-    monkeypatch.setattr(AqueductClient, "add_tag_to_experiment", patched_add_tag_to_experiment)
+    monkeypatch.setattr(AqueductClient, "add_tags_to_experiment", patched_add_tags_to_experiment)
     monkeypatch.setattr(
         AqueductClient, "remove_tag_from_experiment", patched_remove_tag_from_experiment
     )
@@ -152,11 +152,11 @@ def test_experiment_tags(monkeypatch):
     )
 
     assert experiment.tags == expected_tags
-    experiment.add_tag("tag4")
-    assert expected_tags == ["tag1", "tag2", "tag3", "tag4"]
+    experiment.add_tags(["tag4", "tag5"])
+    assert expected_tags == ["tag1", "tag2", "tag3", "tag4", "tag5"]
     assert experiment.tags == expected_tags
     experiment.remove_tag("tag4")
-    assert expected_tags == ["tag1", "tag2", "tag3"]
+    assert expected_tags == ["tag1", "tag2", "tag3", "tag5"]
     assert experiment.tags == expected_tags
 
 
