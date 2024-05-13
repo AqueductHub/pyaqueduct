@@ -65,16 +65,9 @@ class PluginFunction(BaseModel):
         Args:
             parameters: dictionary of parameters to pass to a plugin.
 
-        Raises:
-            AttributeError: client connection should be initialised before this call.
-
         Returns:
             result of plugin execution on server. `returnCode==0` corresponds to success.
         """
-        if self._client is None:
-            raise AttributeError(
-                "Field `_client` should have been initialised, but it is None."
-            )
         result = self._client.execute_plugin_function(
             plugin=self.plugin.name,
             function=self.data.name,
