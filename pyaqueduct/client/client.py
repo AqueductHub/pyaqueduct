@@ -14,7 +14,7 @@ from httpx import TransportError, codes, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
-from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
+from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
 from pyaqueduct.client.plugin_types import PluginData, PluginExecutionResultData
 from pyaqueduct.exceptions import (
     FileDownloadError,
@@ -469,14 +469,13 @@ class AqueductClient(BaseModel):
         Args:
             plugin: plugin name.
             function: function name within a plugin.
-            params (Dict[str, Any]): dictionary with parameters passed to a plugin.
+            params: dictionary with parameters passed to a plugin.
 
         Raises:
             RemoteOperationError: Communication error.
 
         Returns:
-            PluginExecutionResultData:
-                Plugin execution result, `returnCode==0` corresponds to success.
+            Plugin execution result, `returnCode==0` corresponds to success.
         """
         try:
             params_list = [[k, str(v)] for k, v in params.items()]

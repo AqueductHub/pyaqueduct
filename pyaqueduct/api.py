@@ -137,7 +137,7 @@ class API(BaseModel):
         Plugin list may change without server restart.
 
         Returns:
-            list of plugin objects.
+            List of plugin objects.
         """
         return [
             Plugin.from_data(plugin, self._client)
