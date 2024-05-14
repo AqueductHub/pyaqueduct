@@ -93,7 +93,7 @@ class Experiment(BaseModel):
         for tag in tags:
             if not is_valid_tag(tag):
                 raise ValueError(
-                    f"Tag {tags} should only contain alphanumeric characters, "
+                    f"Tag {tag} should only contain alphanumeric characters, "
                     "underscores or hyphens."
                 )
 
