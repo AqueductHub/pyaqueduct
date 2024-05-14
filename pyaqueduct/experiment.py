@@ -90,12 +90,12 @@ class Experiment(BaseModel):
 
         """
 
-        for tag in tags:
-            if not is_valid_tag(tag):
-                raise ValueError(
-                    f"Tag {tag} should only contain alphanumeric characters, "
-                    "underscores or hyphens."
-                )
+        invalid_tags = [tag for tag in tags if not is_valid_tag(tag)]
+        if invalid_tags:
+            raise ValueError(
+                f"Tags {invalid_tags} should only contain alphanumeric characters, "
+                "underscores or hyphens."
+            )
 
         self._client.add_tags_to_experiment(experiment_uuid=self.id, tags=tags)
 
