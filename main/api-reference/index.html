@@ -396,9 +396,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyaqueduct.experiment.Experiment.add_tag" class="md-nav__link">
+  <a href="#pyaqueduct.experiment.Experiment.add_tags" class="md-nav__link">
     <span class="md-ellipsis">
-      add_tag
+      add_tags
     </span>
   </a>
   
@@ -1110,15 +1110,45 @@
 
 
 
-<h2 id="pyaqueduct.experiment.Experiment.add_tag" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">add_tag</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">_MAX_TAG_LENGTH</span><span class="p">))</span></code>
+<h2 id="pyaqueduct.experiment.Experiment.add_tags" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">add_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span></code>
 
-<a href="#pyaqueduct.experiment.Experiment.add_tag" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#pyaqueduct.experiment.Experiment.add_tags" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
   
-      <p>Add new tag to experiment.</p>
+      <p>Add new tags to experiment.</p>
+
+
+
+  <p><span class="doc-section-title">Parameters:</span></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr class="doc-section-item">
+          <td><code>tags</code></td>
+          <td>
+                <code><span title="typing.List">List</span>[<span title="pyaqueduct.experiment.TagString">TagString</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>List of tags to be added to the experiment.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
   </div>
 
