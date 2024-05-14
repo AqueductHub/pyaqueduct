@@ -23,7 +23,7 @@ from pyaqueduct.exceptions import (
     UnAuthorizedError,
 )
 from pyaqueduct.schemas.mutations import (
-    add_tag_to_experiment_mutation,
+    add_tags_to_experiment_mutation,
     create_experiment_mutation,
     remove_experiment_mutation,
     remove_tag_from_experiment_mutation,
@@ -279,13 +279,13 @@ class AqueductClient(BaseModel):
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
-    def add_tag_to_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
+    def add_tags_to_experiment(self, experiment_uuid: UUID, tags: List[str]) -> ExperimentData:
         """
-        Add a tag to an experiment
+        Add tags to an experiment.
 
         Args:
             experiment_uuid: UUID of experiment.
-            tag: Tag to be added to experiment.
+            tags: List of tags to be added to experiment.
 
         Returns:
             Updated experiment.
@@ -293,8 +293,8 @@ class AqueductClient(BaseModel):
         """
         try:
             experiment = self._gql_client.execute(
-                add_tag_to_experiment_mutation,
-                variable_values={"experimentId": str(experiment_uuid), "tag": tag},
+                add_tags_to_experiment_mutation,
+                variable_values={"experimentId": str(experiment_uuid), "tags": tags},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -306,9 +306,9 @@ class AqueductClient(BaseModel):
             ) from error
 
         experiment_obj = ExperimentData.from_dict(
-            experiment["addTagToExperiment"]  # pylint: disable=unsubscriptable-object
+            experiment["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
         )
-        logging.info("Added tag %s to experiment <%s>", tag, experiment_obj.title)
+        logging.info("Added tags %s to experiment <%s>", tags, experiment_obj.title)
         return experiment_obj
 
     def remove_experiment(self, experiment_uuid: UUID) -> None:

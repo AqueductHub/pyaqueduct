@@ -132,17 +132,17 @@ def test_get_experiments_with_filters(monkeypatch):
     assert experiments.experiments[1].description == "test description 2"
 
 
-def test_add_tag_to_experiment(monkeypatch):
+def test_add_tags_to_experiment(monkeypatch):
     experiment_id = uuid4()
-    tag_name = "tag"
 
+    expected_tags = ["tag1", "tag2"]
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
 
     client = AqueductClient(url="http://test.com", timeout=1)
 
-    experiment = client.add_tag_to_experiment(experiment_uuid=experiment_id, tag=tag_name)
+    experiment = client.add_tags_to_experiment(experiment_uuid=experiment_id, tags=expected_tags)
 
-    assert tag_name in experiment.tags
+    assert expected_tags == experiment.tags
 
 
 def test_remove_experiment(monkeypatch):
