@@ -6,7 +6,7 @@ from uuid import uuid4
 from gql.client import SyncClientSession
 from tests.unittests.mock import patched_execute
 
-from pyaqueduct.plugin import Plugin, PluginFunction, PluginParameter
+from pyaqueduct.plugin import Plugin, PluginFunction
 from pyaqueduct.api import API
 from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
 
@@ -117,7 +117,6 @@ def test_get_plugins(monkeypatch):
     assert isinstance(plugins[0].functions[0], PluginFunction)
     assert plugins[0].functions[0].parameters[-1].dataType == "select"
     assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
-    assert isinstance(plugins[0].functions[0].parameters[0], PluginParameter)
 
 
 def test_execute_plugin_function(monkeypatch):

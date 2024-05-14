@@ -12,37 +12,10 @@ from pyaqueduct.client.plugin_types import (PluginExecutionResultData,
                                             PluginParameterData)
 
 
-class PluginExecutionResult(BaseModel):
-    """Class representing result of plugin execution"""
-
-    returnCode: int
-    stdout: str
-    stderr: str
-    logExperiment: str
-    logFile: str
-
-    def __init__(self, result_data: PluginExecutionResultData):
-        super().__init__(**result_data.model_dump())
-
-
-class PluginParameter(BaseModel):
-    """Plugin parameter class"""
-
-    name: str
-    displayName: Optional[str]
-    description: Optional[str]
-    dataType: str
-    defaultValue: Optional[str]
-    options: Optional[List[str]]
-
-    def __init__(self, parameter_data: PluginParameterData):
-        super().__init__(**parameter_data.model_dump())
-
-
 class PluginFunction(BaseModel):
     """Plugin function representation"""
 
-    parameters: List[PluginParameter]
+    parameters: List[PluginParameterData]
     data: PluginFunctionData
     plugin: Plugin = None
 
@@ -54,12 +27,10 @@ class PluginFunction(BaseModel):
         function_data: PluginFunction,
         client: AqueductClient,
     ):
-        super().__init__(plugin=plugin, data=function_data, parameters=[])
+        super().__init__(plugin=plugin, data=function_data, parameters=function_data.parameters)
         self._client = client
-        for parameter in function_data.parameters:
-            self.parameters.append(PluginParameter(parameter))
 
-    def execute(self, parameters: Dict[str, Any]) -> PluginExecutionResult:
+    def execute(self, parameters: Dict[str, Any]) -> PluginExecutionResultData:
         """Execute a plugin function on a server.
 
         Args:
@@ -68,12 +39,11 @@ class PluginFunction(BaseModel):
         Returns:
             result of plugin execution on server. `returnCode==0` corresponds to success.
         """
-        result = self._client.execute_plugin_function(
+        return self._client.execute_plugin_function(
             plugin=self.plugin.name,
             function=self.data.name,
             params=parameters,
         )
-        return PluginExecutionResult(result)
 
 
 class Plugin(BaseModel):
