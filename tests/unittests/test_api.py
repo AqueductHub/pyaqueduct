@@ -117,6 +117,7 @@ def test_get_plugins(monkeypatch):
     assert isinstance(plugins[0].functions[0], PluginFunction)
     assert plugins[0].functions[0].name == "echo"
     assert plugins[0].functions[0].description == "Print values to stdout"
+    assert plugins[0].functions[0].experiment_variable_name == "var4"
     assert plugins[0].functions[0].parameters[-1].dataType == "select"
     assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
 
