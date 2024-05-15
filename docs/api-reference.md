@@ -15,3 +15,5 @@ summary: Covers how to install the software.
     options:
         show_source: false
         heading_level: 2
+
+::: pyaqueduct.plugin
