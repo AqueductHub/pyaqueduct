@@ -75,7 +75,7 @@ class Plugin(BaseModel):
 
     name: str
     """Plugin name. Unique name within a server"""
-    
+
     description: Optional[str]
     """Description of plugin scope and overview of its functions."""
 
