@@ -36,7 +36,7 @@ plugins = api.get_plugins()  # list of plugins
 for plugin in plugins:
     print(f"Plugin `{plugin.name}` by {plugin.authors}: {plugin.description}.")
     for function in plugin.functions:
-        print(f"> Function {function.data.name}: {function.data.description}")
+        print(f"> Function {function.name}: {function.description}")
         for parameter in function.parameters:
             print(
                 f"> > Parameter {parameter.displayName} ({parameter.name}, {parameter.dataType}):"
@@ -45,10 +45,13 @@ for plugin in plugins:
 
 ## Executing a plugin
 
-As shown above, plugin functions accept named parameters. To run a plugin on a server,
-the method [`PluginFunction.execute`](api-reference.md#pyaqueduct.plugin.PluginFunction.execute)
+As shown above, plugin functions accept named parameters. Their definitions are given 
+in `PluginFunction.parameters` collection. Each definition includes name, type, display 
+name, and may include description and default values.
+
+To run a plugin on a server, the method [`PluginFunction.execute()`](api-reference.md#pyaqueduct.plugin.PluginFunction.execute)
 accepts a dictionary, where keys are parameter names, and values are arguments to pass.
-Please note, that values may be of any simple type, to me passed to a server, they will be 
+Please note, that values may be of any simple type, while being sent to a server, they are
 converted into strings. Data types allowed in plugins are:
 - `str` and `texarea` — arbitrary strings.
 - `experiment` — string with an experiment ID (EID).
@@ -57,22 +60,34 @@ converted into strings. Data types allowed in plugins are:
 - `float`, `int` — numerical types.
 - `bool` — `True` or `False`.
 
-Here is the example of calling an example plugin:
+Here is the example of calling an example plugin. Logs of the execution 
+(process return code, standard output and standard error streams) are saved to the experiment.
 
 ```python
 api = API("http://localhost:8000", timeout=100)
+exp = api.create_experiment(
+            title="test experiment",
+            description="testing plugins")
+
 plugins = api.get_plugins()
-# example plugin
+# choose an example plugin by name
 plugin = [p for p in plugins if p.name == "Dummy plugin"][0]
 function = plugin.functions[0]
+
 result = function.execute({
     "var1": "string value",
     "var2": 1,
     "var3": .31415e+1,
-    "var4": "20240531-1",  #experiment ID
+    "var4": exp.alias,
     "var5": "text\nin\nmultiple\nstrings",
     "var6": True,
-    "var7": "string1",  # one of the options
+    "var7": "string1",
 })
 print(f"success: {result.returnCode == 0}")
-print(f"output:\n{result.stdout}")
+
+# download a log file into a current working directory
+exp.download_file(file_name=result.logFile, destination_dir=".")
+# print the log file content
+with open("./" + result.logFile) as f:
+    print(f.read())
+```

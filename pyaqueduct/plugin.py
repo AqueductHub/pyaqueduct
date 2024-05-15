@@ -1,4 +1,7 @@
-""" The module contains classes representing interface with plugins. """
+""" The module contains classes representing interface with plugins. Plugin
+list may be retrieved from the server using api function `API.get_plugins().
+Each plugin may have one or more functions. Each function has a list of expected
+parameters."""
 
 from __future__ import annotations
 
@@ -13,11 +16,15 @@ from pyaqueduct.client.plugin_types import (PluginExecutionResultData,
 
 
 class PluginFunction(BaseModel):
-    """Plugin function representation"""
+    """Plugin function representation. Contains an execution method
+    which trigger pluhin function execution on the side of Aqueduct server."""
 
     parameters: List[PluginParameterData]
+    """List of parameters which plugin function expects to accept."""
+
     data: PluginFunctionData
     plugin: Plugin = None
+    """Plugin, which this function belongs to."""
 
     _client: AqueductClient = None
 
@@ -29,6 +36,23 @@ class PluginFunction(BaseModel):
     ):
         super().__init__(plugin=plugin, data=function_data, parameters=function_data.parameters)
         self._client = client
+
+    @property
+    def name(self) -> str:
+        """Plugin function name. Unique inside a plugin."""
+        return self.data.name
+
+    @property
+    def description(self) -> str:
+        """Detailed description of the plugin function."""
+        return self.data.description
+
+    @property
+    def experimentVariableName(self) -> str:
+        """Name of the variable which is used to define a default experiment.
+        This experiment will be used to save logs and validate variables
+        of `file` type."""
+        return self.data.experimentVariableName
 
     def execute(self, parameters: Dict[str, Any]) -> PluginExecutionResultData:
         """Execute a plugin function on a server.
@@ -50,8 +74,13 @@ class Plugin(BaseModel):
     """Class represents a plugin as a collection of functions."""
 
     name: str
+    """Plugin name. Unique name within a server"""
+    
     description: Optional[str]
+    """Description of plugin scope and overview of its functions."""
+
     authors: str
+    """Authors of the plugin."""
 
     functions: List[PluginFunction]
 
