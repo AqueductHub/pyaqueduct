@@ -48,7 +48,7 @@ class PluginFunction(BaseModel):
         return self.data.description
 
     @property
-    def experimentVariableName(self) -> str:
+    def experiment_variable_name(self) -> str:
         """Name of the variable which is used to define a default experiment.
         This experiment will be used to save logs and validate variables
         of `file` type."""
