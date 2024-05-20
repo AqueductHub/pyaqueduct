@@ -14,7 +14,7 @@ Each plugin is a collection of **functions**. One plugin may have one or more fu
 Functions of one plugin may perform different operations, but on the server side they share
 settings and execution environment.
 
-Plugin functions are expected to read data from exeperiments and record their results to experiments. Plugin execution logs are also persisted in the experiment, which plugin function was accessing.
+Plugin functions are expected to read data from experiments and record their results to experiments. Plugin execution logs are also persisted in the experiment which plugin function was accessing.
 
 # Plugins in `pyaqueduct` library
 
@@ -25,7 +25,7 @@ and execution results.
 ## Which plugins are available
 
 [`pyaqueduct.API.get_plugins`](api-reference.md#pyaqueduct.API.get_plugins) method is responsible
-for listing plugins, available for execution. Here is an example of the code to access plugins, their
+for listing plugins available for execution. Here is an example of the code to access plugins, their
 functions and function definitions:
 
 ```python

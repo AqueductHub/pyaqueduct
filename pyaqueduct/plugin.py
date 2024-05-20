@@ -17,14 +17,14 @@ from pyaqueduct.client.plugin_types import (PluginExecutionResultData,
 
 class PluginFunction(BaseModel):
     """Plugin function representation. Contains an execution method
-    which trigger pluhin function execution on the side of Aqueduct server."""
+    which trigger plugin function execution on the side of Aqueduct server."""
 
     parameters: List[PluginParameterData]
     """List of parameters which plugin function expects to accept."""
 
     data: PluginFunctionData
     plugin: Plugin = None
-    """Plugin, which this function belongs to."""
+    """Plugin to which this function belongs."""
 
     _client: AqueductClient = None
 
