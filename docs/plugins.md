@@ -14,7 +14,8 @@ Each plugin is a collection of **functions**. One plugin may have one or more fu
 Functions of one plugin may perform different operations, but on the server side they share
 settings and execution environment.
 
-Plugin functions are expected to read data from experiments and record their results to experiments. Plugin execution logs are also persisted in the experiment which plugin function was accessing.
+Plugin functions are expected to read data from experiments and record their results to experiments.
+Plugin execution logs are also persisted in the experiment which plugin function was accessing.
 
 # Plugins in `pyaqueduct` library
 
@@ -53,7 +54,7 @@ To run a plugin on a server, the method [`PluginFunction.execute()`](api-referen
 accepts a dictionary, where keys are parameter names, and values are arguments to pass.
 Please note, that values may be of any simple type, while being sent to a server, they are
 converted into strings. Data types allowed in plugins are:
-- `str` and `texarea` — arbitrary strings.
+- `str` and `textarea` — arbitrary strings.
 - `experiment` — string with an experiment ID (EID).
 - `file` — string with a file name inside and experiment.
 - `select` — string, one of the listed options.

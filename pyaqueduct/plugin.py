@@ -1,5 +1,5 @@
 """ The module contains classes representing interface with plugins. Plugin
-list may be retrieved from the server using api function `API.get_plugins().
+list may be retrieved from the server using api method `API.get_plugins()`.
 Each plugin may have one or more functions. Each function has a list of expected
 parameters."""
 
