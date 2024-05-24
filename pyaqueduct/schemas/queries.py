@@ -93,12 +93,12 @@ get_all_tags_query = gql(
     """
 )
 
-get_all_plugins_query = gql(
+get_all_extensions_query = gql(
     """
     query MyQuery {
-        plugins {
+        extensions {
             name, authors, description,
-            functions {
+            actions {
                 name, description, experimentVariableName,
                 parameters {
                     name

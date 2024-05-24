@@ -182,22 +182,22 @@ def test_get_tags(monkeypatch):
     assert len(tags.tags) == 10
 
 
-def test_get_plugins(monkeypatch):
+def test_get_extensions(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
     client = AqueductClient(url="http://test.com", timeout=1)
-    plugins = client.get_plugins()
-    assert len(plugins) == 1
-    assert len(plugins[0].functions) == 2
-    assert plugins[0].functions[0].parameters[-1].dataType == "select"
-    assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
+    extensions = client.get_extensions()
+    assert len(extensions) == 1
+    assert len(extensions[0].actions) == 2
+    assert extensions[0].actions[0].parameters[-1].dataType == "select"
+    assert extensions[0].actions[0].parameters[-1].options[1] == "string2"
 
 
-def test_execute_plugin_function(monkeypatch):
+def test_execute_extension_action(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
     client = AqueductClient(url="http://test.com", timeout=1)
-    exec_result = client.execute_plugin_function(
-        plugin="Dummy plugin",
-        function="echo",
+    exec_result = client.execute_extension_action(
+        extension="Dummy extension",
+        action="echo",
         params={
             "var1": "a",
             "var2": 1,

@@ -6,7 +6,7 @@ from uuid import uuid4
 from gql.client import SyncClientSession
 from tests.unittests.mock import patched_execute
 
-from pyaqueduct.plugin import Plugin, PluginFunction
+from pyaqueduct.extensions import Extension, ExtensionAction
 from pyaqueduct.api import API
 from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
 
@@ -136,26 +136,26 @@ def test_find_experiments(monkeypatch):
         assert experiment.created_at == expected_exp.expected_datetime
 
 
-def test_get_plugins(monkeypatch):
+def test_get_extensions(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
     api = API(url="http://test.com", timeout=1)
-    plugins = api.get_plugins()
-    assert len(plugins) == 1
-    assert isinstance(plugins[0], Plugin)
-    assert len(plugins[0].functions) == 2
-    assert isinstance(plugins[0].functions[0], PluginFunction)
-    assert plugins[0].functions[0].name == "echo"
-    assert plugins[0].functions[0].description == "Print values to stdout"
-    assert plugins[0].functions[0].experiment_variable_name == "var4"
-    assert plugins[0].functions[0].parameters[-1].dataType == "select"
-    assert plugins[0].functions[0].parameters[-1].options[1] == "string2"
+    extensions = api.get_extensions()
+    assert len(extensions) == 1
+    assert isinstance(extensions[0], Extension)
+    assert len(extensions[0].actions) == 2
+    assert isinstance(extensions[0].actions[0], ExtensionAction)
+    assert extensions[0].actions[0].name == "echo"
+    assert extensions[0].actions[0].description == "Print values to stdout"
+    assert extensions[0].actions[0].experiment_variable_name == "var4"
+    assert extensions[0].actions[0].parameters[-1].dataType == "select"
+    assert extensions[0].actions[0].parameters[-1].options[1] == "string2"
 
 
-def test_execute_plugin_function(monkeypatch):
+def test_execute_extension_action(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
     api = API(url="http://test.com", timeout=1)
-    plugins = api.get_plugins()
-    result = plugins[0].functions[0].execute({"var1": 1})
+    extensions = api.get_extensions()
+    result = extensions[0].actions[0].execute({"var1": 1})
     assert result.returnCode == 0
     assert result.stdout != ""
     assert result.stderr == ""

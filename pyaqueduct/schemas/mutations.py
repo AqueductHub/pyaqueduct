@@ -132,17 +132,17 @@ remove_experiment_mutation = gql(
     """
 )
 
-execute_plugin_function_mutation = gql(
+execute_extension_action_mutation = gql(
     """
-    mutation ExecutePlugin (
-        $plugin: String!,
-        $function: String!,
+    mutation ExecuteExtension (
+        $extension: String!,
+        $action: String!,
         $params: [[String!]!]!,
     ) {
-        executePlugin(
+        executeExtension(
             params: $params,
-            plugin: $plugin,
-            function: $function,
+            extension: $extension,
+            action: $action,
         ) {
             logExperiment
             logFile

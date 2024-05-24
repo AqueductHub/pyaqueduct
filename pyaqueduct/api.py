@@ -18,7 +18,7 @@ from pydantic import (
 
 from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
-from pyaqueduct.plugin import Plugin
+from pyaqueduct.extensions import Extension
 from pyaqueduct.settings import Settings
 
 
@@ -143,19 +143,19 @@ class API(BaseModel):
         ]
 
     @validate_call
-    def get_plugins(self) -> List[Plugin]:
-        """Gets the current fresh plugin list from the server.
-        Plugin list may change without server restart.
+    def get_extensions(self) -> List[Extension]:
+        """Gets the current fresh extension list from the server.
+        Extension list may change without server restart.
 
         Returns:
-            List of plugin objects.
+            List of extension objects.
         """
         return [
-            Plugin(
-                name=plugin_data.name,
-                description=plugin_data.description,
-                authors=plugin_data.authors,
-                functions=plugin_data.functions,
+            Extension(
+                name=extension_data.name,
+                description=extension_data.description,
+                authors=extension_data.authors,
+                actions=extension_data.actions,
                 client=self._client)
-            for plugin_data in self._client.get_plugins()
+            for extension_data in self._client.get_extensions()
         ]
