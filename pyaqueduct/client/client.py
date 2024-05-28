@@ -488,7 +488,8 @@ class AqueductClient(BaseModel):
         return extensions
 
     def execute_extension_action(
-            self, extension: str, action: str, params: Dict[str, Any]) -> ExtensionExecutionResultData:
+            self, extension: str, action: str, params: Dict[str, Any]
+        ) -> ExtensionExecutionResultData:
         """ Executes extension action on a server.
 
         Args:
