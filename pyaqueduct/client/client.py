@@ -15,7 +15,7 @@ from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
 from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
-from pyaqueduct.client.plugin_types import PluginData, PluginExecutionResultData
+from pyaqueduct.client.extension_types import ExtensionData, ExtensionExecutionResultData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileUploadError,
@@ -27,12 +27,12 @@ from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
     create_experiment_mutation,
     remove_experiment_mutation,
-    execute_plugin_function_mutation,
+    execute_extension_action_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
 from pyaqueduct.schemas.queries import (
-    get_all_plugins_query,
+    get_all_extensions_query,
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
@@ -464,15 +464,15 @@ class AqueductClient(BaseModel):
                 f"Couldn't download {file_name} due to transport error."
             ) from error
 
-    def get_plugins(self) -> List[PluginData]:
-        """ Get the list of plugins from the server.
+    def get_extensions(self) -> List[ExtensionData]:
+        """ Get the list of extensions from the server.
 
         Returns:
-            List of plugin objects.
+            List of extension objects.
         """
         try:
-            plugins = self._gql_client.execute(
-                get_all_plugins_query,
+            extensions = self._gql_client.execute(
+                get_all_extensions_query,
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -483,32 +483,33 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        plugins = list(map(PluginData.from_dict, plugins["plugins"]))  # pylint: disable=unsubscriptable-object
-        logging.info("Fetched %s plugins", len(plugins))
-        return plugins
+        extensions = list(map(ExtensionData.from_dict, extensions["extensions"]))  # pylint: disable=unsubscriptable-object
+        logging.info("Fetched %s extensions", len(extensions))
+        return extensions
 
-    def execute_plugin_function(
-            self, plugin: str, function: str, params: Dict[str, Any]) -> PluginExecutionResultData:
-        """ Executes plugin function on a server.
+    def execute_extension_action(
+            self, extension: str, action: str, params: Dict[str, Any]
+        ) -> ExtensionExecutionResultData:
+        """ Executes extension action on a server.
 
         Args:
-            plugin: plugin name.
-            function: function name within a plugin.
-            params: dictionary with parameters passed to a plugin.
+            extension: extension name.
+            action: action name within an extension.
+            params: dictionary with parameters passed to an extension.
 
         Raises:
             RemoteOperationError: Communication error.
 
         Returns:
-            Plugin execution result, `returnCode==0` corresponds to success.
+            Extension execution result, `returnCode==0` corresponds to success.
         """
         try:
             params_list = [[k, str(v)] for k, v in params.items()]
-            plugin_result = self._gql_client.execute(
-                execute_plugin_function_mutation,
+            extension_result = self._gql_client.execute(
+                execute_extension_action_mutation,
                 variable_values={
-                    "plugin": plugin,
-                    "function": function,
+                    "extension": extension,
+                    "action": action,
                     "params": params_list,
                 }
             )
@@ -521,8 +522,8 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        result = PluginExecutionResultData.from_dict(plugin_result["executePlugin"])  # pylint: disable=unsubscriptable-object
+        result = ExtensionExecutionResultData.from_dict(extension_result["executeExtension"])  # pylint: disable=unsubscriptable-object
         logging.info(
-            "Executed a %s / %s plugin function with result code %d",
-            plugin, function, result.returnCode)
+            "Executed a %s / %s extension action with result code %d",
+            extension, action, result.returnCode)
         return result

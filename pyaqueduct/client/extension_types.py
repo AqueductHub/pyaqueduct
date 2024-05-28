@@ -1,4 +1,4 @@
-""" The module contains classes to represent plugin-related responses from the server. """
+""" The module contains classes to represent extension-related responses from the server. """
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class PluginParameterData(BaseModel):
-    """Parameter definition for a plugin function."""
+class ExtensionParameterData(BaseModel):
+    """Parameter definition for an extension action."""
 
     name: str
     displayName: Optional[str]
@@ -18,25 +18,25 @@ class PluginParameterData(BaseModel):
     options: Optional[List[str]]
 
 
-class PluginFunctionData(BaseModel):
-    """Executable plugin function."""
+class ExtensionActionData(BaseModel):
+    """Executable extension action."""
 
     name: str
     description: str
     experimentVariableName: str
-    parameters: List[PluginParameterData]
+    parameters: List[ExtensionParameterData]
 
 
-class PluginData(BaseModel):
-    """Dataclass for defining a plugin"""
+class ExtensionData(BaseModel):
+    """Dataclass for defining an extension"""
 
     name: str
     description: Optional[str]
     authors: str
-    functions: List[PluginFunctionData]
+    actions: List[ExtensionActionData]
 
     @classmethod
-    def from_dict(cls, data: dict) -> PluginData:
+    def from_dict(cls, data: dict) -> ExtensionData:
         """Composes an object from a server response.
 
         Args:
@@ -45,11 +45,11 @@ class PluginData(BaseModel):
         Returns:
             Object populated with server response data.
         """
-        return PluginData(**data)
+        return ExtensionData(**data)
 
 
-class PluginExecutionResultData(BaseModel):
-    """Results of plugin execution"""
+class ExtensionExecutionResultData(BaseModel):
+    """Results of extension execution"""
 
     returnCode: int
     stdout: str
@@ -58,7 +58,7 @@ class PluginExecutionResultData(BaseModel):
     logFile: str
 
     @classmethod
-    def from_dict(cls, data: dict) -> PluginExecutionResultData:
+    def from_dict(cls, data: dict) -> ExtensionExecutionResultData:
         """Composes an object from a server response.
 
         Args:
@@ -67,4 +67,4 @@ class PluginExecutionResultData(BaseModel):
         Returns:
             Object populated with server response data.
         """
-        return PluginExecutionResultData(**data)
+        return ExtensionExecutionResultData(**data)

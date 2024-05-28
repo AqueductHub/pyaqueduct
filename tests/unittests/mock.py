@@ -3,12 +3,12 @@ from uuid import uuid4
 from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
     create_experiment_mutation,
-    execute_plugin_function_mutation,
+    execute_extension_action_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
 from pyaqueduct.schemas.queries import (
-    get_all_plugins_query,
+    get_all_extensions_query,
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
@@ -114,14 +114,14 @@ def patched_execute(self, query, variable_values, **kwargs):
             }
         }
     
-    elif query == get_all_plugins_query:
+    elif query == get_all_extensions_query:
         return {
-            "plugins": [
+            "extensions": [
                 {
-                    "name": "Dummy plugin",
+                    "name": "Dummy extension",
                     "authors": "aqueduct@riverlane.com",
-                    "description": "This plugin prints environment variables passed to it. No requests to Aqueduct sent.\n",
-                    "functions": [
+                    "description": "This extension prints environment variables passed to it. No requests to Aqueduct sent.\n",
+                    "actions": [
                         {
                             "name": "echo",
                             "description": "Print values to stdout",
@@ -263,11 +263,11 @@ def patched_execute(self, query, variable_values, **kwargs):
             ]
         }
 
-    elif query == execute_plugin_function_mutation:
+    elif query == execute_extension_action_mutation:
         return  {
-            "executePlugin": {
+            "executeExtension": {
                 "logExperiment": "234-4",
-                "logFile": "Dummy plugin-echo-20240510-135611.log",
+                "logFile": "Dummy extension-echo-20240510-135611.log",
                 "returnCode": 0,
                 "stderr": "",
                 "stdout": (
