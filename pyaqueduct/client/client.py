@@ -10,6 +10,7 @@ from gql import Client
 from gql.client import SyncClientSession
 from gql.transport import exceptions as gql_exceptions
 from gql.transport.httpx import HTTPXTransport
+from graphql import DocumentNode
 from httpx import TransportError, codes, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
@@ -84,7 +85,7 @@ class AqueductClient(BaseModel):
             )
         )
 
-    def perform_request(self, operation, variable_values):
+    def fetch_response(self, operation: DocumentNode, variable_values):
         try:
             data = self._gql_client.execute(
                 operation,
@@ -115,7 +116,7 @@ class AqueductClient(BaseModel):
             Experiment object.
         """
 
-        data = self.perform_request(
+        data = self.fetch_response(
             create_experiment_mutation,
             {"title": title, "description": description, "tags": tags or []},
         )
@@ -140,7 +141,7 @@ class AqueductClient(BaseModel):
             Experiment object.
 
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             update_experiment_mutation,
             {
                 "experimentId": str(experiment_uuid),
@@ -178,7 +179,7 @@ class AqueductClient(BaseModel):
             List of experiments with filters applied.
 
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             get_experiments_query,
             {
                 "limit": limit,
@@ -210,7 +211,7 @@ class AqueductClient(BaseModel):
             Experiment object.
 
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             get_experiment_query,
             {"type": "UUID", "value": str(experiment_uuid)},
         )
@@ -231,7 +232,7 @@ class AqueductClient(BaseModel):
             Updated experiment.
 
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             get_experiment_query,
             {"type": "ALIAS", "value": alias},
         )
@@ -253,7 +254,7 @@ class AqueductClient(BaseModel):
             Updated experiment.
 
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             add_tags_to_experiment_mutation,
             {"experimentId": str(experiment_uuid), "tags": tags},
         )
@@ -271,7 +272,7 @@ class AqueductClient(BaseModel):
             experiment_uuid: UUID of experiment.
 
         """
-        data = self.perform_request(
+        self.fetch_response(
             remove_experiment_mutation,
             {"experimentId": str(experiment_uuid)},
         )
@@ -287,7 +288,7 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment having tag removed
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             remove_tag_from_experiment_mutation,
             {"experimentId": str(experiment_uuid), "tag": tag},
         )
@@ -310,7 +311,7 @@ class AqueductClient(BaseModel):
         Returns:
         List[str]: A list of all existing tags
         """
-        data = self.perform_request(
+        data = self.fetch_response(
             get_all_tags_query,
             {"limit": limit, "offset": offset, "dangling": dangling},
         )
