@@ -85,7 +85,17 @@ class AqueductClient(BaseModel):
             )
         )
 
-    def fetch_response(self, operation: DocumentNode, variable_values):
+    def fetch_response(self, operation: DocumentNode, variable_values: Dict) -> Dict[str, Any]:
+        """
+        Send query or mutation request to the server.
+
+        Args:
+            operation: Query or mutation schema.
+            variable_values: Values for the params to be sent in the request.
+
+        Returns:
+            A JSON object
+        """
         try:
             data = self._gql_client.execute(
                 operation,
