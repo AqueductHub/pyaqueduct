@@ -11,16 +11,16 @@ def test_experiment_title(monkeypatch):
     expected_id = uuid4()
     expected_title = "test title"
     expected_description = "test description"
-    expected_alias = "test_alias"
+    expected_eid = "test_eid"
     expected_creation_datetime = datetime.now()
     expected_updated_datetime = datetime.now()
 
     def patched_get_experiment(self, experiment_uuid):
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_creation_datetime,
             updated_at=expected_updated_datetime,
         )
@@ -28,10 +28,10 @@ def test_experiment_title(monkeypatch):
     def patched_update_experiment(self, experiment_uuid, title):
         assert title == "new title"
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_creation_datetime,
             updated_at=expected_updated_datetime,
         )
@@ -41,8 +41,8 @@ def test_experiment_title(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        experiment_id=expected_id,
-        alias=expected_alias,
+        uuid=expected_id,
+        eid=expected_eid,
         created_at=datetime.now(),
     )
 
@@ -55,15 +55,15 @@ def test_experiment_description(monkeypatch):
     expected_id = uuid4()
     expected_title = "test title"
     expected_description = "test description"
-    expected_alias = "test_alias"
+    expected_eid = "test_eid"
     expected_datetime = datetime.now()
 
     def patched_get_experiment(self, experiment_uuid):
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
         )
@@ -71,10 +71,10 @@ def test_experiment_description(monkeypatch):
     def patched_update_experiment(self, experiment_uuid, description):
         assert description == "new description"
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
         )
@@ -84,8 +84,8 @@ def test_experiment_description(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        experiment_id=expected_id,
-        alias=expected_alias,
+        uuid=expected_id,
+        eid=expected_eid,
         created_at=datetime.now(),
     )
 
@@ -97,16 +97,16 @@ def test_experiment_tags(monkeypatch):
     expected_id = uuid4()
     expected_title = "test title"
     expected_description = "test description"
-    expected_alias = "test_alias"
+    expected_eid = "test_eid"
     expected_datetime = datetime.now()
     expected_tags = ["tag1", "tag2", "tag3"]
 
     def patched_get_experiment(self, experiment_uuid):
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
             tags=expected_tags,
@@ -116,10 +116,10 @@ def test_experiment_tags(monkeypatch):
         assert tags == ["tag4", "tag5"]
         expected_tags.extend(tags)
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
             tags=expected_tags,
@@ -129,10 +129,10 @@ def test_experiment_tags(monkeypatch):
         assert tag == "tag4"
         expected_tags.remove(tag)
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
             tags=expected_tags,
@@ -146,8 +146,8 @@ def test_experiment_tags(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        experiment_id=expected_id,
-        alias=expected_alias,
+        uuid=expected_id,
+        eid=expected_eid,
         created_at=datetime.now(),
     )
 
@@ -164,17 +164,17 @@ def test_experiment_files(monkeypatch):
     expected_id = uuid4()
     expected_title = "test title"
     expected_description = "test description"
-    expected_alias = "test_alias"
+    expected_eid = "test_eid"
     expected_datetime = datetime.now()
     expected_tags = ["tag1", "tag2", "tag3"]
     expected_files = [ExperimentFile(name="file1", path="path1", modified_at=datetime.now())]
 
     def patched_get_experiment(self, experiment_uuid):
         return ExperimentData(
-            id=experiment_uuid,
+            uuid=experiment_uuid,
             title=expected_title,
             description=expected_description,
-            alias=expected_alias,
+            eid=expected_eid,
             created_at=expected_datetime,
             updated_at=expected_datetime,
             tags=expected_tags,
@@ -197,8 +197,8 @@ def test_experiment_files(monkeypatch):
     mocked_client = AqueductClient(url="http://test.com", timeout=1)
     experiment = Experiment(
         client=mocked_client,
-        experiment_id=expected_id,
-        alias=expected_alias,
+        uuid=expected_id,
+        eid=expected_eid,
         created_at=datetime.now(),
     )
 

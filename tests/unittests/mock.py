@@ -17,10 +17,10 @@ def patched_execute(self, query, variable_values, **kwargs):
     if query == create_experiment_mutation:
         return {
             "createExperiment": {
-                "id": f"{uuid4()}",
+                "uuid": f"{uuid4()}",
                 "title": variable_values["title"],
                 "description": variable_values["description"],
-                "alias": "230101-01",
+                "eid": "230101-01",
                 "tags": variable_values["tags"],
                 "files": [],
                 "createdAt": "2024-01-03T18:03:46.135824",
@@ -31,10 +31,10 @@ def patched_execute(self, query, variable_values, **kwargs):
     elif query == update_experiment_mutation:
         return {
             "updateExperiment": {
-                "id": variable_values["experimentId"],
+                "uuid": variable_values["uuid"],
                 "title": variable_values["title"],
                 "description": variable_values["description"],
-                "alias": "230101-01",
+                "eid": "230101-01",
                 "tags": [],
                 "files": [],
                 "createdAt": "2024-01-03T18:03:46.135824",
@@ -45,10 +45,10 @@ def patched_execute(self, query, variable_values, **kwargs):
     elif query == get_experiment_query:
         return {
             "experiment": {
-                "id": variable_values["value"],
+                "uuid": variable_values["value"],
                 "title": "test title",
                 "description": "test description",
-                "alias": "230101-01",
+                "eid": "230101-01",
                 "tags": [],
                 "createdAt": "2023-01-01T00:00:00",
                 "updatedAt": "2023-01-01T00:00:00",
@@ -61,10 +61,10 @@ def patched_execute(self, query, variable_values, **kwargs):
             "experiments": {
                 "experimentsData": [
                     {
-                        "id": f"{uuid4()}",
+                        "uuid": f"{uuid4()}",
                         "title": f"test title {idx}",
                         "description": f"test description {idx}",
-                        "alias": f"230101-0{idx}",
+                        "eid": f"230101-0{idx}",
                         "tags": [],
                         "createdAt": "2023-01-01T00:00:00",
                         "updatedAt": "2023-01-01T00:00:00",
@@ -79,10 +79,10 @@ def patched_execute(self, query, variable_values, **kwargs):
     elif query == add_tags_to_experiment_mutation:
         return {
             "addTagsToExperiment": {
-                "id": variable_values["experimentId"],
+                "uuid": variable_values["uuid"],
                 "title": "test title",
                 "description": "test description",
-                "alias": "230101-01",
+                "eid": "230101-01",
                 "tags": variable_values["tags"],
                 "files": [],
                 "createdAt": "2024-01-03T18:03:46.135824",
@@ -93,10 +93,10 @@ def patched_execute(self, query, variable_values, **kwargs):
     elif query == remove_tag_from_experiment_mutation:
         return {
             "removeTagFromExperiment": {
-                "id": variable_values["experimentId"],
+                "uuid": variable_values["uuid"],
                 "title": "test title",
                 "description": "test description",
-                "alias": "230101-01",
+                "eid": "230101-01",
                 "tags": [],
                 "files": [],
                 "createdAt": "2024-01-03T18:03:46.135824",

@@ -112,7 +112,7 @@ class AqueductClient(BaseModel):
         experiment_obj = ExperimentData.from_dict(
             experiment["createExperiment"]  # pylint: disable=unsubscriptable-object
         )
-        logging.info("Created experiment - %s - %s", experiment_obj.id, experiment_obj.title)
+        logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
 
     def update_experiment(
@@ -140,7 +140,7 @@ class AqueductClient(BaseModel):
             experiment = self._gql_client.execute(
                 update_experiment_mutation,
                 variable_values={
-                    "experimentId": str(experiment_uuid),
+                    "uuid": str(experiment_uuid),
                     "title": title,
                     "description": description,
                 },
@@ -157,7 +157,7 @@ class AqueductClient(BaseModel):
         experiment_obj = ExperimentData.from_dict(
             experiment["updateExperiment"]  # pylint: disable=unsubscriptable-object
         )
-        logging.info("Updated experiment - %s", experiment_obj.id)
+        logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
 
     def get_experiments(
@@ -175,7 +175,7 @@ class AqueductClient(BaseModel):
         Args:
             limit: Pagination field, number of experiments to be fetched.
             offset: Pagination field, number of experiments to skip.
-            title: Perform search on experiments through their title and alias.
+            title: Perform search on experiments through their title and eid.
             tags: Get experiments that have these tags.
             start_date: Start datetime to filter experiments (timezone aware).
             end_date: End datetime to filter experiments to (timezone aware).
@@ -249,12 +249,12 @@ class AqueductClient(BaseModel):
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
-    def get_experiment_by_alias(self, alias: str) -> ExperimentData:
+    def get_experiment_by_eid(self, eid: str) -> ExperimentData:
         """
-        Get an Experiment by Alias.
+        Get an Experiment by its EID.
 
         Args:
-            alias: Experiment's alias.
+            EID: Experiment's EID.
 
         Returns:
             Updated experiment.
@@ -262,7 +262,7 @@ class AqueductClient(BaseModel):
         """
         try:
             experiment = self._gql_client.execute(
-                get_experiment_query, variable_values={"type": "ALIAS", "value": alias}
+                get_experiment_query, variable_values={"type": "EID", "value": eid}
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -294,7 +294,7 @@ class AqueductClient(BaseModel):
         try:
             experiment = self._gql_client.execute(
                 add_tags_to_experiment_mutation,
-                variable_values={"experimentId": str(experiment_uuid), "tags": tags},
+                variable_values={"uuid": str(experiment_uuid), "tags": tags},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -322,7 +322,7 @@ class AqueductClient(BaseModel):
         try:
             self._gql_client.execute(
                 remove_experiment_mutation,
-                variable_values={"experimentId": str(experiment_uuid)},
+                variable_values={"uuid": str(experiment_uuid)},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -347,7 +347,7 @@ class AqueductClient(BaseModel):
         try:
             experiment = self._gql_client.execute(
                 remove_tag_from_experiment_mutation,
-                variable_values={"experimentId": str(experiment_uuid), "tag": tag},
+                variable_values={"uuid": str(experiment_uuid), "tag": tag},
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
