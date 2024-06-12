@@ -64,6 +64,7 @@ plugins:
 
 nav:
   - "index.md"
+  - "getting-started.md"
   - "api-reference.md"
   - "Aqueduct Core Documentation": "https://aqueducthub.github.io/aqueductcore/"
 
