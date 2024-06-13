@@ -251,7 +251,7 @@ class AqueductClient(BaseModel):
 
     def get_experiment_by_eid(self, eid: str) -> ExperimentData:
         """
-        Get an Experiment by its EID.
+        Get an experiment by its EID.
 
         Args:
             EID: Experiment's EID.
