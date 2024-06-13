@@ -32,9 +32,9 @@ class Experiment(BaseModel):
     _client: AqueductClient
     "Client object reference."
     uuid: UUID
-    "UUID of the experiment."
+    "UUID of the experiment. This is an internal experiment identifier in the database"
     eid: str
-    "EID of the experiment."
+    "EID of the experiment. User-readable identifier, it is unique within one Aqueduct installation"
     created_at: datetime
     "Creation datetime of the experiment."
 
