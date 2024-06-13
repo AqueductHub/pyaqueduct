@@ -131,3 +131,25 @@ remove_experiment_mutation = gql(
     }
     """
 )
+
+execute_extension_action_mutation = gql(
+    """
+    mutation ExecuteExtension (
+        $extension: String!,
+        $action: String!,
+        $params: [[String!]!]!,
+    ) {
+        executeExtension(
+            params: $params,
+            extension: $extension,
+            action: $action,
+        ) {
+            logExperiment
+            logFile
+            returnCode
+            stderr
+            stdout
+        }
+    }
+    """
+)

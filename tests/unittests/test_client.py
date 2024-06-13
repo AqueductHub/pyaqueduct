@@ -182,6 +182,33 @@ def test_get_tags(monkeypatch):
     assert len(tags.tags) == 10
 
 
+def test_get_extensions(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    client = AqueductClient(url="http://test.com", timeout=1)
+    extensions = client.get_extensions()
+    assert len(extensions) == 1
+    assert len(extensions[0].actions) == 2
+    assert extensions[0].actions[0].parameters[-1].dataType == "select"
+    assert extensions[0].actions[0].parameters[-1].options[1] == "string2"
+
+
+def test_execute_extension_action(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    client = AqueductClient(url="http://test.com", timeout=1)
+    exec_result = client.execute_extension_action(
+        extension="Dummy extension",
+        action="echo",
+        params={
+            "var1": "a",
+            "var2": 1,
+            "var3": False,
+        }
+    )
+    assert exec_result.returnCode == 0
+    assert exec_result.stdout != ""
+    assert exec_result.stderr == ""
+
+
 @patch("pyaqueduct.client.client.post")
 def test_file_upload(fake_httpx_post):
     fake_httpx_post.return_value = Response(status_code=200)
