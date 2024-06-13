@@ -1,6 +1,6 @@
 ---
 title: Using server extensions
-summary: Covers how to use custom server actionality (extensions) with client library.
+summary: Covers how to use custom server functionality (extensions) with client library.
 ---
 
 # What is an extension in Aqueduct
