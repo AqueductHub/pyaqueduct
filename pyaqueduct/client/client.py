@@ -175,7 +175,7 @@ class AqueductClient(BaseModel):
         Args:
             limit: Pagination field, number of experiments to be fetched.
             offset: Pagination field, number of experiments to skip.
-            title: Perform search on experiments through their title and eid.
+            title: Perform search on experiments through their title and EID.
             tags: Get experiments that have these tags.
             start_date: Start datetime to filter experiments (timezone aware).
             end_date: End datetime to filter experiments to (timezone aware).
