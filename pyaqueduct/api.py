@@ -64,40 +64,40 @@ class API(BaseModel):
         experiment_data = self._client.create_experiment(title=title, description=description)
         return Experiment(
             client=self._client,
-            experiment_id=experiment_data.id,
-            alias=experiment_data.alias,
+            uuid=experiment_data.uuid,
+            eid=experiment_data.eid,
             created_at=experiment_data.created_at,
         )
 
     @validate_call
-    def get_experiment(self, alias: str) -> Experiment:
+    def get_experiment(self, eid: str) -> Experiment:
         """Get the experiment by the specified identifier to operate on.
 
         Args:
-            alias: Alias of the specified experiment.
+            eid: EID of the specified experiment.
 
         Returns:
             Experiment object to interact with the experiment data.
 
         """
-        experiment_data = self._client.get_experiment_by_alias(alias=alias)
+        experiment_data = self._client.get_experiment_by_eid(eid=eid)
         return Experiment(
             client=self._client,
-            experiment_id=experiment_data.id,
-            alias=experiment_data.alias,
+            uuid=experiment_data.uuid,
+            eid=experiment_data.eid,
             created_at=experiment_data.created_at,
         )
 
     @validate_call
-    def remove_experiment_by_alias(self, alias: str) -> None:
+    def remove_experiment_by_eid(self, eid: str) -> None:
         """Remove experiment from the database. Experiment's files will be also removed.
 
         Args:
-            alias: Alias of the specified experiment.
+            eid: EID of the specified experiment.
 
         """
-        experiment_data = self._client.get_experiment_by_alias(alias=alias)
-        self._client.remove_experiment(experiment_uuid=experiment_data.id)
+        experiment_data = self._client.get_experiment_by_eid(eid=eid)
+        self._client.remove_experiment(experiment_uuid=experiment_data.uuid)
 
     @validate_call
     def find_experiments(
@@ -134,8 +134,8 @@ class API(BaseModel):
         return [
             Experiment(
                 client=self._client,
-                experiment_id=experiment.id,
-                alias=experiment.alias,
+                uuid=experiment.uuid,
+                eid=experiment.eid,
                 created_at=experiment.created_at,
             )
             for experiment in experiments

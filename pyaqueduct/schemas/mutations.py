@@ -16,10 +16,10 @@ create_experiment_mutation = gql(
                 tags: $tags
             }
         ) {
-            id
+            uuid
             title
             description
-            alias
+            eid
             createdAt
             updatedAt
             tags
@@ -36,21 +36,21 @@ create_experiment_mutation = gql(
 update_experiment_mutation = gql(
     """
     mutation UpdateExperiment(
-        $experimentId: UUID!,
+        $uuid: UUID!,
         $title: String,
         $description: String
     ) {
         updateExperiment (
-            experimentId: $experimentId,
+            uuid: $uuid,
             experimentUpdateInput: {
                 title: $title,
                 description: $description
             }
         ) {
-            id
+            uuid
             title
             description
-            alias
+            eid
             createdAt
             updatedAt
             tags
@@ -67,19 +67,19 @@ update_experiment_mutation = gql(
 add_tags_to_experiment_mutation = gql(
     """
     mutation AddTagToExperiment (
-        $experimentId: UUID!,
+        $uuid: UUID!,
         $tags: [String!]!
     ) {
         addTagsToExperiment(
             experimentTagsInput: {
-                experimentId: $experimentId,
+                uuid: $uuid,
                 tags: $tags
             }
         ) {
-            id
+            uuid
             title
             description
-            alias
+            eid
             createdAt
             updatedAt
             tags
@@ -96,19 +96,19 @@ add_tags_to_experiment_mutation = gql(
 remove_tag_from_experiment_mutation = gql(
     """
     mutation RemoveTagFromExperiment (
-        $experimentId: UUID!,
+        $uuid: UUID!,
         $tag: String!
     ) {
         removeTagFromExperiment (
             experimentTagInput: {
-                experimentId: $experimentId,
+                uuid: $uuid,
                 tag: $tag
             }
         ) {
-            id
+            uuid
             title
             description
-            alias
+            eid
             createdAt
             updatedAt
             tags
@@ -125,9 +125,9 @@ remove_tag_from_experiment_mutation = gql(
 remove_experiment_mutation = gql(
     """
     mutation RemoveTagFromExperiment (
-        $experimentId: UUID!
+        $uuid: UUID!
         ) {
-        removeExperiment(experimentRemoveInput: {experimentId: $experimentId})
+        removeExperiment(experimentRemoveInput: {uuid: $uuid})
     }
     """
 )

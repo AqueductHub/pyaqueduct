@@ -28,10 +28,10 @@ class ExperimentFile:
 class ExperimentData:
     """Dataclass for experiment"""
 
-    id: UUID  # pylint: disable=invalid-name
+    uuid: UUID
     title: str
     description: str
-    alias: str
+    eid: str
     created_at: datetime
     updated_at: datetime
     tags: List[str] = field(default_factory=list)
@@ -41,11 +41,11 @@ class ExperimentData:
     def from_dict(cls, data):
         """Convert experiment object to dictionary"""
         return cls(
-            id=UUID(data["id"]),
+            uuid=UUID(data["uuid"]),
             title=data["title"],
             description=data["description"],
             tags=data["tags"],
-            alias=data["alias"],
+            eid=data["eid"],
             files=[ExperimentFile.from_dict(file_data) for file_data in data["files"]],
             created_at=datetime.fromisoformat(data["createdAt"]),
             updated_at=datetime.fromisoformat(data["updatedAt"]),

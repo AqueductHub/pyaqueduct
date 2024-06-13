@@ -101,10 +101,10 @@ def test_get_experiments_with_filters(monkeypatch):
             "experiments": {
                 "experimentsData": [
                     {
-                        "id": f"{uuid4()}",
+                        "uuid": f"{uuid4()}",
                         "title": f"test title {idx}",
                         "description": f"test description {idx}",
-                        "alias": f"230101-0{idx}",
+                        "eid": f"230101-0{idx}",
                         "tags": [],
                         "createdAt": "2023-01-01T00:00:00",
                         "updatedAt": "2023-01-01T00:00:00",
@@ -149,8 +149,8 @@ def test_remove_experiment(monkeypatch):
     experiment_id = uuid4()
 
     def patched_execute(self, query, variable_values, **kwargs):
-        if variable_values["experimentId"]:
-            assert variable_values["experimentId"] == str(experiment_id)
+        if variable_values["uuid"]:
+            assert variable_values["uuid"] == str(experiment_id)
 
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
 

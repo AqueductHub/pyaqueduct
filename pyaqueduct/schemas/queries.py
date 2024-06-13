@@ -23,10 +23,10 @@ get_experiments_query = gql(
             offset: $offset,
         ) {
             experimentsData {
-                id
+                uuid
                 title
                 description
-                alias
+                eid
                 createdAt
                 updatedAt
                 tags
@@ -55,10 +55,10 @@ get_experiment_query = gql(
             type: $type,
         }
        ) {
-        id
+        uuid
         title
         description
-        alias
+        eid
         createdAt
         updatedAt
         tags
