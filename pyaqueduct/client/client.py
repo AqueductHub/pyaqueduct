@@ -3,7 +3,7 @@
 import logging
 import os
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from gql import Client
@@ -14,7 +14,8 @@ from httpx import TransportError, codes, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
-from pyaqueduct.client.types import ExperimentData, ExperimentsInfo, TagsData
+from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
+from pyaqueduct.client.extension_types import ExtensionData, ExtensionExecutionResultData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileUploadError,
@@ -26,10 +27,12 @@ from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
     create_experiment_mutation,
     remove_experiment_mutation,
+    execute_extension_action_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
 from pyaqueduct.schemas.queries import (
+    get_all_extensions_query,
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
@@ -460,3 +463,67 @@ class AqueductClient(BaseModel):
             raise FileDownloadError(
                 f"Couldn't download {file_name} due to transport error."
             ) from error
+
+    def get_extensions(self) -> List[ExtensionData]:
+        """ Get the list of extensions from the server.
+
+        Returns:
+            List of extension objects.
+        """
+        try:
+            extensions = self._gql_client.execute(
+                get_all_extensions_query,
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
+        extensions = list(map(ExtensionData.from_dict, extensions["extensions"]))  # pylint: disable=unsubscriptable-object
+        logging.info("Fetched %s extensions", len(extensions))
+        return extensions
+
+    def execute_extension_action(
+            self, extension: str, action: str, params: Dict[str, Any]
+        ) -> ExtensionExecutionResultData:
+        """ Executes extension action on a server.
+
+        Args:
+            extension: extension name.
+            action: action name within an extension.
+            params: dictionary with parameters passed to an extension.
+
+        Raises:
+            RemoteOperationError: Communication error.
+
+        Returns:
+            Extension execution result, `returnCode==0` corresponds to success.
+        """
+        try:
+            params_list = [[k, str(v)] for k, v in params.items()]
+            extension_result = self._gql_client.execute(
+                execute_extension_action_mutation,
+                variable_values={
+                    "extension": extension,
+                    "action": action,
+                    "params": params_list,
+                }
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+
+        result = ExtensionExecutionResultData.from_dict(extension_result["executeExtension"])  # pylint: disable=unsubscriptable-object
+        logging.info(
+            "Executed a %s / %s extension action with result code %d",
+            extension, action, result.returnCode)
+        return result

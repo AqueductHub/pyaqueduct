@@ -92,3 +92,24 @@ get_all_tags_query = gql(
     }
     """
 )
+
+get_all_extensions_query = gql(
+    """
+    query MyQuery {
+        extensions {
+            name, authors, description,
+            actions {
+                name, description, experimentVariableName,
+                parameters {
+                    name
+                    displayName
+                    description
+                    dataType
+                    defaultValue
+                    options
+                }
+            }
+        }
+    }
+    """
+)

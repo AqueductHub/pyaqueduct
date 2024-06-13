@@ -18,6 +18,7 @@ from pydantic import (
 
 from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
+from pyaqueduct.extensions import Extension
 from pyaqueduct.settings import Settings
 
 
@@ -139,4 +140,22 @@ class API(BaseModel):
                 created_at=experiment.created_at,
             )
             for experiment in experiments
+        ]
+
+    @validate_call
+    def get_extensions(self) -> List[Extension]:
+        """Gets the current fresh extension list from the server.
+        Extension list may change without server restart.
+
+        Returns:
+            List of extension objects.
+        """
+        return [
+            Extension(
+                name=extension_data.name,
+                description=extension_data.description,
+                authors=extension_data.authors,
+                actions=extension_data.actions,
+                client=self._client)
+            for extension_data in self._client.get_extensions()
         ]
