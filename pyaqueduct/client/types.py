@@ -28,7 +28,7 @@ class ExperimentFile:
 class ExperimentData:
     """Dataclass for experiment"""
 
-    uuid: UUID  # pylint: disable=invalid-name
+    uuid: UUID
     title: str
     description: str
     eid: str
