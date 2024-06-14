@@ -7,15 +7,12 @@ from typing import List, Tuple
 from uuid import UUID
 
 from pydantic import BaseModel, Field, validate_call
-from typing_extensions import Annotated
 
 from pyaqueduct.client import AqueductClient
 
 _MAX_TITLE_LENGTH = 100
 _MAX_DESCRIPTION_LENGTH = 2000
 _MAX_TAG_LENGTH = 50
-
-TagString = Annotated[str, Field(..., max_length=_MAX_TAG_LENGTH)]
 
 
 class Experiment(BaseModel):
@@ -74,7 +71,7 @@ class Experiment(BaseModel):
         return self._client.get_experiment(self.id).tags
 
     @validate_call
-    def add_tags(self, tags: List[TagString]) -> None:
+    def add_tags(self, tags: List[str]) -> None:
         """Add new tags to experiment.
 
         Args:
