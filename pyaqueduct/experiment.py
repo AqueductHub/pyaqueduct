@@ -6,13 +6,9 @@ from datetime import datetime
 from typing import List, Tuple
 from uuid import UUID
 
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel, validate_call
 
 from pyaqueduct.client import AqueductClient
-
-_MAX_TITLE_LENGTH = 100
-_MAX_DESCRIPTION_LENGTH = 2000
-_MAX_TAG_LENGTH = 50
 
 
 class Experiment(BaseModel):
@@ -40,7 +36,7 @@ class Experiment(BaseModel):
 
     @title.setter
     @validate_call
-    def title(self, value: str = Field(..., max_length=_MAX_TITLE_LENGTH)) -> None:
+    def title(self, value: str) -> None:
         """Set title of experiment.
 
         Args:
@@ -56,7 +52,7 @@ class Experiment(BaseModel):
 
     @description.setter
     @validate_call
-    def description(self, value: str = Field(..., max_length=_MAX_DESCRIPTION_LENGTH)) -> None:
+    def description(self, value: str) -> None:
         """Set description of experiment.
 
         Args:
@@ -81,7 +77,7 @@ class Experiment(BaseModel):
         self._client.add_tags_to_experiment(experiment_uuid=self.id, tags=tags)
 
     @validate_call
-    def remove_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
+    def remove_tag(self, tag: str) -> None:
         """Remove tag from experiment."""
         self._client.remove_tag_from_experiment(experiment_uuid=self.id, tag=tag)
 

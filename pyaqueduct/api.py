@@ -7,7 +7,6 @@ from typing import List, Optional
 
 from pydantic import (
     BaseModel,
-    Field,
     HttpUrl,
     NonNegativeInt,
     PositiveFloat,
@@ -17,8 +16,7 @@ from pydantic import (
 )
 
 from pyaqueduct.client import AqueductClient
-from pyaqueduct.experiment import _MAX_DESCRIPTION_LENGTH, _MAX_TITLE_LENGTH, Experiment
-from pyaqueduct.extensions import Extension
+from pyaqueduct.experiment import Experiment
 from pyaqueduct.settings import Settings
 
 
@@ -48,8 +46,8 @@ class API(BaseModel):
     @validate_call
     def create_experiment(
         self,
-        title: str = Field(..., min_length=1, max_length=_MAX_TITLE_LENGTH),
-        description: str = Field("", max_length=_MAX_DESCRIPTION_LENGTH),
+        title: str,
+        description: str,
     ) -> Experiment:
         """Create an experiment with specific title and description.
 
@@ -156,6 +154,7 @@ class API(BaseModel):
                 description=extension_data.description,
                 authors=extension_data.authors,
                 actions=extension_data.actions,
-                client=self._client)
+                client=self._client,
+            )
             for extension_data in self._client.get_extensions()
         ]
