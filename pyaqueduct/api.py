@@ -17,6 +17,7 @@ from pydantic import (
 
 from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import Experiment
+from pyaqueduct.extensions import Extension
 from pyaqueduct.settings import Settings
 
 
