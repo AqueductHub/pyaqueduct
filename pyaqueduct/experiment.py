@@ -3,27 +3,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from re import compile as recompile
 from typing import List, Tuple
 from uuid import UUID
 
-from pydantic import BaseModel, Field, validate_call
-from typing_extensions import Annotated
+from pydantic import BaseModel, validate_call
 
 from pyaqueduct.client import AqueductClient
-
-_MAX_TITLE_LENGTH = 100
-_MAX_DESCRIPTION_LENGTH = 2000
-_MAX_TAG_LENGTH = 50
-
-TagString = Annotated[str, Field(..., max_length=_MAX_TAG_LENGTH)]
-
-
-def is_valid_tag(tag: str) -> bool:
-    """Check if consists of only alphanumeric characters, underscore and hyphens"""
-    pattern = recompile("^[a-zA-Z0-9_-]+$")
-
-    return bool(pattern.match(tag))
 
 
 class Experiment(BaseModel):
@@ -51,7 +36,7 @@ class Experiment(BaseModel):
 
     @title.setter
     @validate_call
-    def title(self, value: str = Field(..., max_length=_MAX_TITLE_LENGTH)) -> None:
+    def title(self, value: str) -> None:
         """Set title of experiment.
 
         Args:
@@ -67,7 +52,7 @@ class Experiment(BaseModel):
 
     @description.setter
     @validate_call
-    def description(self, value: str = Field(..., max_length=_MAX_DESCRIPTION_LENGTH)) -> None:
+    def description(self, value: str) -> None:
         """Set description of experiment.
 
         Args:
@@ -82,25 +67,17 @@ class Experiment(BaseModel):
         return self._client.get_experiment(self.id).tags
 
     @validate_call
-    def add_tags(self, tags: List[TagString]) -> None:
+    def add_tags(self, tags: List[str]) -> None:
         """Add new tags to experiment.
 
         Args:
             tags: List of tags to be added to the experiment.
 
         """
-
-        invalid_tags = [tag for tag in tags if not is_valid_tag(tag)]
-        if invalid_tags:
-            raise ValueError(
-                f"Tags {invalid_tags} should only contain alphanumeric characters, "
-                "underscores or hyphens."
-            )
-
         self._client.add_tags_to_experiment(experiment_uuid=self.id, tags=tags)
 
     @validate_call
-    def remove_tag(self, tag: str = Field(..., max_length=_MAX_TAG_LENGTH)) -> None:
+    def remove_tag(self, tag: str) -> None:
         """Remove tag from experiment."""
         self._client.remove_tag_from_experiment(experiment_uuid=self.id, tag=tag)
 
