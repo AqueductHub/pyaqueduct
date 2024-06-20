@@ -586,7 +586,7 @@
 
 
 <h3 id="pyaqueduct.API.create_experiment" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">create_experiment</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">_MAX_TITLE_LENGTH</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">_MAX_DESCRIPTION_LENGTH</span><span class="p">))</span></code>
+          <code class="highlight language-python"><span class="n">create_experiment</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span></code>
 
 <a href="#pyaqueduct.API.create_experiment" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -619,7 +619,7 @@
             </div>
           </td>
           <td>
-                <code><span title="pydantic.Field">Field</span>(..., min_length=1, max_length=<span title="pyaqueduct.experiment._MAX_TITLE_LENGTH">_MAX_TITLE_LENGTH</span>)</code>
+              <em>required</em>
           </td>
         </tr>
         <tr class="doc-section-item">
@@ -633,7 +633,7 @@
             </div>
           </td>
           <td>
-                <code><span title="pydantic.Field">Field</span>(&#39;&#39;, max_length=<span title="pyaqueduct.experiment._MAX_DESCRIPTION_LENGTH">_MAX_DESCRIPTION_LENGTH</span>)</code>
+              <em>required</em>
           </td>
         </tr>
     </tbody>
@@ -1211,7 +1211,7 @@ Extension list may change without server restart.</p>
         <tr class="doc-section-item">
           <td><code>tags</code></td>
           <td>
-                <code><span title="typing.List">List</span>[<span title="pyaqueduct.experiment.TagString">TagString</span>]</code>
+                <code><span title="typing.List">List</span>[str]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -1254,7 +1254,7 @@ Extension list may change without server restart.</p>
 
 
 <h2 id="pyaqueduct.experiment.Experiment.remove_tag" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">remove_tag</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">_MAX_TAG_LENGTH</span><span class="p">))</span></code>
+          <code class="highlight language-python"><span class="n">remove_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span></code>
 
 <a href="#pyaqueduct.experiment.Experiment.remove_tag" class="headerlink" title="Permanent link">&para;</a></h2>
 
