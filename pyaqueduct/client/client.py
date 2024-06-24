@@ -10,6 +10,7 @@ from gql import Client
 from gql.client import SyncClientSession
 from gql.transport import exceptions as gql_exceptions
 from gql.transport.httpx import HTTPXTransport
+from graphql import DocumentNode
 from httpx import TransportError, codes, post, stream
 from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
@@ -84,6 +85,32 @@ class AqueductClient(BaseModel):
             )
         )
 
+    def fetch_response(self, operation: DocumentNode, variable_values: Dict) -> Dict[str, Any]:
+        """
+        Send query or mutation request to the server.
+
+        Args:
+            operation: Query or mutation schema.
+            variable_values: Values for the params to be sent in the request.
+
+        Returns:
+            A JSON object
+        """
+        try:
+            data = self._gql_client.execute(
+                operation,
+                variable_values=variable_values,
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occurred in the remote operation."
+            ) from error
+        return data
+
     def create_experiment(
         self, title: str, description: str, tags: Optional[List[str]] = None
     ) -> ExperimentData:
@@ -98,22 +125,13 @@ class AqueductClient(BaseModel):
         Returns:
             Experiment object.
         """
-        try:
-            experiment = self._gql_client.execute(
-                create_experiment_mutation,
-                variable_values={"title": title, "description": description, "tags": tags or []},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
 
+        data = self.fetch_response(
+            create_experiment_mutation,
+            {"title": title, "description": description, "tags": tags or []},
+        )
         experiment_obj = ExperimentData.from_dict(
-            experiment["createExperiment"]  # pylint: disable=unsubscriptable-object
+            data["createExperiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
@@ -133,32 +151,16 @@ class AqueductClient(BaseModel):
             Experiment object.
 
         """
-        if title and title == "":
-            raise ValueError("Title cannot be an empty string")
-
-        if description and description == "":
-            raise ValueError("Description cannot be an empty string")
-
-        try:
-            experiment = self._gql_client.execute(
-                update_experiment_mutation,
-                variable_values={
-                    "uuid": str(experiment_uuid),
-                    "title": title,
-                    "description": description,
-                },
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
+        data = self.fetch_response(
+            update_experiment_mutation,
+            {
+                "uuid": str(experiment_uuid),
+                "title": title,
+                "description": description,
+            },
+        )
         experiment_obj = ExperimentData.from_dict(
-            experiment["updateExperiment"]  # pylint: disable=unsubscriptable-object
+            data["updateExperiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
@@ -187,32 +189,19 @@ class AqueductClient(BaseModel):
             List of experiments with filters applied.
 
         """
-        if limit <= 0:
-            raise ValueError("Limit should be a positive number")
-
-        try:
-            experiments = self._gql_client.execute(
-                get_experiments_query,
-                variable_values={
-                    "limit": limit,
-                    "offset": offset,
-                    "title": title,
-                    "startDate": start_datetime.isoformat() if start_datetime else None,
-                    "endDate": end_datetime.isoformat() if end_datetime else None,
-                    "tags": tags,
-                },
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
+        data = self.fetch_response(
+            get_experiments_query,
+            {
+                "limit": limit,
+                "offset": offset,
+                "title": title,
+                "startDate": start_datetime.isoformat() if start_datetime else None,
+                "endDate": end_datetime.isoformat() if end_datetime else None,
+                "tags": tags,
+            },
+        )
         experiments_obj = ExperimentsInfo.from_dict(
-            experiments["experiments"]  # pylint: disable=unsubscriptable-object
+            data["experiments"]  # pylint: disable=unsubscriptable-object
         )
         logging.info(
             "Fetched %s experiments, total %s experiments",
@@ -232,22 +221,12 @@ class AqueductClient(BaseModel):
             Experiment object.
 
         """
-        try:
-            experiment = self._gql_client.execute(
-                get_experiment_query,
-                variable_values={"type": "UUID", "value": str(experiment_uuid)},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
+        data = self.fetch_response(
+            get_experiment_query,
+            {"type": "UUID", "value": str(experiment_uuid)},
+        )
         experiment_obj = ExperimentData.from_dict(
-            experiment["experiment"]  # pylint: disable=unsubscriptable-object
+            data["experiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
@@ -263,21 +242,12 @@ class AqueductClient(BaseModel):
             Updated experiment.
 
         """
-        try:
-            experiment = self._gql_client.execute(
-                get_experiment_query, variable_values={"type": "EID", "value": eid}
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
+        data = self.fetch_response(
+            get_experiment_query,
+            {"type": "EID", "value": eid},
+        )
         experiment_obj = ExperimentData.from_dict(
-            experiment["experiment"]  # pylint: disable=unsubscriptable-object
+            data["experiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
@@ -294,22 +264,12 @@ class AqueductClient(BaseModel):
             Updated experiment.
 
         """
-        try:
-            experiment = self._gql_client.execute(
-                add_tags_to_experiment_mutation,
-                variable_values={"uuid": str(experiment_uuid), "tags": tags},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
+        data = self.fetch_response(
+            add_tags_to_experiment_mutation,
+            {"uuid": str(experiment_uuid), "tags": tags},
+        )
         experiment_obj = ExperimentData.from_dict(
-            experiment["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
+            data["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Added tags %s to experiment <%s>", tags, experiment_obj.title)
         return experiment_obj
@@ -322,19 +282,10 @@ class AqueductClient(BaseModel):
             experiment_uuid: UUID of experiment.
 
         """
-        try:
-            self._gql_client.execute(
-                remove_experiment_mutation,
-                variable_values={"uuid": str(experiment_uuid)},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
+        self.fetch_response(
+            remove_experiment_mutation,
+            {"uuid": str(experiment_uuid)},
+        )
 
     def remove_tag_from_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
         """
@@ -347,22 +298,13 @@ class AqueductClient(BaseModel):
         Returns:
         Experiment: Experiment having tag removed
         """
-        try:
-            experiment = self._gql_client.execute(
-                remove_tag_from_experiment_mutation,
-                variable_values={"uuid": str(experiment_uuid), "tag": tag},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
+        data = self.fetch_response(
+            remove_tag_from_experiment_mutation,
+            {"uuid": str(experiment_uuid), "tag": tag},
+        )
 
         experiment_obj = ExperimentData.from_dict(
-            experiment["removeTagFromExperiment"]  # pylint: disable=unsubscriptable-object
+            data["removeTagFromExperiment"]  # pylint: disable=unsubscriptable-object
         )
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
@@ -379,24 +321,11 @@ class AqueductClient(BaseModel):
         Returns:
         List[str]: A list of all existing tags
         """
-        if limit <= 0:
-            raise ValueError("Limit cannot be 0")
-
-        try:
-            tags = self._gql_client.execute(
-                get_all_tags_query,
-                variable_values={"limit": limit, "offset": offset, "dangling": dangling},
-            )
-        except gql_exceptions.TransportServerError as error:
-            if error.code:
-                process_response_common(codes(error.code))
-            raise
-        except gql_exceptions.TransportQueryError as error:
-            raise RemoteOperationError(
-                error.errors if error.errors else "Unknown error occurred in the remote operation."
-            ) from error
-
-        tags_obj = TagsData.from_dict(tags["tags"])  # pylint: disable=unsubscriptable-object
+        data = self.fetch_response(
+            get_all_tags_query,
+            {"limit": limit, "offset": offset, "dangling": dangling},
+        )
+        tags_obj = TagsData.from_dict(data["tags"])  # pylint: disable=unsubscriptable-object
         logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
         return tags_obj
 
