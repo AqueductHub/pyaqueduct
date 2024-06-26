@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from uuid import UUID
 from typing import List, Optional
 
 from pydantic import (
@@ -70,7 +71,7 @@ class API(BaseModel):
         )
 
     @validate_call
-    def get_experiment(self, eid: str) -> Experiment:
+    def get_experiment_by_eid(self, eid: str) -> Experiment:
         """Get the experiment by the specified identifier to operate on.
 
         Args:
@@ -81,6 +82,25 @@ class API(BaseModel):
 
         """
         experiment_data = self._client.get_experiment_by_eid(eid=eid)
+        return Experiment(
+            client=self._client,
+            uuid=experiment_data.uuid,
+            eid=experiment_data.eid,
+            created_at=experiment_data.created_at,
+        )
+
+    @validate_call
+    def get_experiment_by_uuid(self, uuid: UUID) -> Experiment:
+        """Get the experiment by the specified identifier to operate on.
+
+        Args:
+            uuid: UUID of the specified experiment.
+
+        Returns:
+            Experiment object to interact with the experiment data.
+
+        """
+        experiment_data = self._client.get_experiment(experiment_uuid=uuid)
         return Experiment(
             client=self._client,
             uuid=experiment_data.uuid,
