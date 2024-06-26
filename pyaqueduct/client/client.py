@@ -133,7 +133,7 @@ class AqueductClient(BaseModel):
         experiment_obj = ExperimentData.from_dict(
             data["createExperiment"]  # pylint: disable=unsubscriptable-object
         )
-        logging.info("Created experiment - %s - %s", experiment_obj.id, experiment_obj.title)
+        logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
 
     def update_experiment(
@@ -154,7 +154,7 @@ class AqueductClient(BaseModel):
         data = self.fetch_response(
             update_experiment_mutation,
             {
-                "experimentId": str(experiment_uuid),
+                "uuid": str(experiment_uuid),
                 "title": title,
                 "description": description,
             },
@@ -162,7 +162,7 @@ class AqueductClient(BaseModel):
         experiment_obj = ExperimentData.from_dict(
             data["updateExperiment"]  # pylint: disable=unsubscriptable-object
         )
-        logging.info("Updated experiment - %s", experiment_obj.id)
+        logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
 
     def get_experiments(
@@ -180,7 +180,7 @@ class AqueductClient(BaseModel):
         Args:
             limit: Pagination field, number of experiments to be fetched.
             offset: Pagination field, number of experiments to skip.
-            title: Perform search on experiments through their title and alias.
+            title: Perform search on experiments through their title and EID.
             tags: Get experiments that have these tags.
             start_date: Start datetime to filter experiments (timezone aware).
             end_date: End datetime to filter experiments to (timezone aware).
@@ -231,12 +231,12 @@ class AqueductClient(BaseModel):
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
-    def get_experiment_by_alias(self, alias: str) -> ExperimentData:
+    def get_experiment_by_eid(self, eid: str) -> ExperimentData:
         """
-        Get an Experiment by Alias.
+        Get an experiment by its EID.
 
         Args:
-            alias: Experiment's alias.
+            EID: Experiment's EID.
 
         Returns:
             Updated experiment.
@@ -244,7 +244,7 @@ class AqueductClient(BaseModel):
         """
         data = self.fetch_response(
             get_experiment_query,
-            {"type": "ALIAS", "value": alias},
+            {"type": "EID", "value": eid},
         )
         experiment_obj = ExperimentData.from_dict(
             data["experiment"]  # pylint: disable=unsubscriptable-object
@@ -266,7 +266,7 @@ class AqueductClient(BaseModel):
         """
         data = self.fetch_response(
             add_tags_to_experiment_mutation,
-            {"experimentId": str(experiment_uuid), "tags": tags},
+            {"uuid": str(experiment_uuid), "tags": tags},
         )
         experiment_obj = ExperimentData.from_dict(
             data["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
@@ -284,7 +284,7 @@ class AqueductClient(BaseModel):
         """
         self.fetch_response(
             remove_experiment_mutation,
-            {"experimentId": str(experiment_uuid)},
+            {"uuid": str(experiment_uuid)},
         )
 
     def remove_tag_from_experiment(self, experiment_uuid: UUID, tag: str) -> ExperimentData:
@@ -300,7 +300,7 @@ class AqueductClient(BaseModel):
         """
         data = self.fetch_response(
             remove_tag_from_experiment_mutation,
-            {"experimentId": str(experiment_uuid), "tag": tag},
+            {"uuid": str(experiment_uuid), "tag": tag},
         )
 
         experiment_obj = ExperimentData.from_dict(

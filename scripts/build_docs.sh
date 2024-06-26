@@ -12,6 +12,7 @@ if [ -d "$PROJECT_ROOT/site" ]; then
     rm -rf $PROJECT_ROOT/site
 fi
 
+$SCRIPT_DIR/build_tutorial.sh
 
 # Build static website
 poetry run mkdocs build --clean --verbose
