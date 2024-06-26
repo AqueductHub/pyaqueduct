@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://aqueducthub.github.io/pyaqueduct/main/api-reference/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../getting-started/">
       
       
       
@@ -261,6 +261,26 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PyAqueduct Application Programming Interface (API) Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -324,15 +344,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyaqueduct.experiment.Experiment.alias" class="md-nav__link">
-    <span class="md-ellipsis">
-      alias
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pyaqueduct.experiment.Experiment.created_at" class="md-nav__link">
     <span class="md-ellipsis">
       created_at
@@ -351,18 +362,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyaqueduct.experiment.Experiment.files" class="md-nav__link">
+  <a href="#pyaqueduct.experiment.Experiment.eid" class="md-nav__link">
     <span class="md-ellipsis">
-      files
+      eid
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pyaqueduct.experiment.Experiment.id" class="md-nav__link">
+  <a href="#pyaqueduct.experiment.Experiment.files" class="md-nav__link">
     <span class="md-ellipsis">
-      id
+      files
     </span>
   </a>
   
@@ -390,6 +401,15 @@
   <a href="#pyaqueduct.experiment.Experiment.updated_at" class="md-nav__link">
     <span class="md-ellipsis">
       updated_at
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyaqueduct.experiment.Experiment.uuid" class="md-nav__link">
+    <span class="md-ellipsis">
+      uuid
     </span>
   </a>
   
@@ -816,7 +836,7 @@
 
 
 <h3 id="pyaqueduct.API.get_experiment" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_experiment</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">get_experiment</span><span class="p">(</span><span class="n">eid</span><span class="p">)</span></code>
 
 <a href="#pyaqueduct.API.get_experiment" class="headerlink" title="Permanent link">&para;</a></h3>
 
@@ -839,13 +859,13 @@
     </thead>
     <tbody>
         <tr class="doc-section-item">
-          <td><code>alias</code></td>
+          <td><code>eid</code></td>
           <td>
                 <code>str</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Alias of the specified experiment.</p>
+              <p>EID of the specified experiment.</p>
             </div>
           </td>
           <td>
@@ -932,10 +952,10 @@ Extension list may change without server restart.</p>
 
 
 
-<h3 id="pyaqueduct.API.remove_experiment_by_alias" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">remove_experiment_by_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span></code>
+<h3 id="pyaqueduct.API.remove_experiment_by_eid" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">remove_experiment_by_eid</span><span class="p">(</span><span class="n">eid</span><span class="p">)</span></code>
 
-<a href="#pyaqueduct.API.remove_experiment_by_alias" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#pyaqueduct.API.remove_experiment_by_eid" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -956,13 +976,13 @@ Extension list may change without server restart.</p>
     </thead>
     <tbody>
         <tr class="doc-section-item">
-          <td><code>alias</code></td>
+          <td><code>eid</code></td>
           <td>
                 <code>str</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Alias of the specified experiment.</p>
+              <p>EID of the specified experiment.</p>
             </div>
           </td>
           <td>
@@ -1012,27 +1032,6 @@ Extension list may change without server restart.</p>
 
 
 
-<h2 id="pyaqueduct.experiment.Experiment.alias" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">alias</span><span class="p">:</span> <span class="nb">str</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-<a href="#pyaqueduct.experiment.Experiment.alias" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Alias of the experiment.</p>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
 <h2 id="pyaqueduct.experiment.Experiment.created_at" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span></code>
   
@@ -1076,6 +1075,27 @@ Extension list may change without server restart.</p>
 
 
 
+<h2 id="pyaqueduct.experiment.Experiment.eid" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">eid</span><span class="p">:</span> <span class="nb">str</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#pyaqueduct.experiment.Experiment.eid" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>EID of the experiment. User-readable identifier, it is unique within one Aqueduct installation</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h2 id="pyaqueduct.experiment.Experiment.files" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]]</span></code>
   
@@ -1089,27 +1109,6 @@ Extension list may change without server restart.</p>
   <div class="doc doc-contents ">
   
       <p>Get file names of expriment.</p>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h2 id="pyaqueduct.experiment.Experiment.id" class="doc doc-heading">
-          <code class="highlight language-python"><span class="nb">id</span><span class="p">:</span> <span class="n">UUID</span></code>
-  
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
-  </span>
-
-<a href="#pyaqueduct.experiment.Experiment.id" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Unique ID of the experiment.</p>
   </div>
 
 </div>
@@ -1174,6 +1173,27 @@ Extension list may change without server restart.</p>
   <div class="doc doc-contents ">
   
       <p>Get last updated datetime of the experiment.</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="pyaqueduct.experiment.Experiment.uuid" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#pyaqueduct.experiment.Experiment.uuid" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>UUID of the experiment. This is an internal experiment identifier in the database</p>
   </div>
 
 </div>
