@@ -1,5 +1,5 @@
-name: Automated release for PyAqueduct every alternate Monday at 12:00 OM
-
+name: Automated release
+# Automated release for Aqueduct Core every alternate Monday at 12:00 PM
 on:
   schedule:
     - cron: "0 11 * * 1"
