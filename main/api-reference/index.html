@@ -835,10 +835,10 @@
 
 
 
-<h3 id="pyaqueduct.API.get_experiment" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">get_experiment</span><span class="p">(</span><span class="n">eid</span><span class="p">)</span></code>
+<h3 id="pyaqueduct.API.get_experiment_by_eid" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_experiment_by_eid</span><span class="p">(</span><span class="n">eid</span><span class="p">)</span></code>
 
-<a href="#pyaqueduct.API.get_experiment" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#pyaqueduct.API.get_experiment_by_eid" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -866,6 +866,79 @@
           <td>
             <div class="doc-md-description">
               <p>EID of the specified experiment.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><span class="doc-section-title">Returns:</span></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr class="doc-section-item">
+          <td>
+                <code><a class="autorefs autorefs-internal" title="pyaqueduct.experiment.Experiment" href="#pyaqueduct.experiment.Experiment">Experiment</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Experiment object to interact with the experiment data.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="pyaqueduct.API.get_experiment_by_uuid" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_experiment_by_uuid</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></code>
+
+<a href="#pyaqueduct.API.get_experiment_by_uuid" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Get the experiment by the specified identifier to operate on.</p>
+
+
+
+  <p><span class="doc-section-title">Parameters:</span></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr class="doc-section-item">
+          <td><code>uuid</code></td>
+          <td>
+                <code><span title="uuid.UUID">UUID</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>UUID of the specified experiment.</p>
             </div>
           </td>
           <td>
