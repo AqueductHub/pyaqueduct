@@ -45,5 +45,6 @@ jobs:
           tag: ${{ inputs.version }}
           name: "${{ inputs.version }}"
           allowUpdates: true
+          generateReleaseNotes: true
           artifacts: "dist/pyaqueduct-*.tar.gz"
           token: ${{ secrets.GITHUB_TOKEN }}
