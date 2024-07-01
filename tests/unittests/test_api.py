@@ -61,7 +61,35 @@ def test_get_experiment_by_eid(monkeypatch):
     monkeypatch.setattr(AqueductClient, "get_experiment_by_eid", patched_get_experiment)
     api = API(url="http://test.com", timeout=1)
 
-    experiment = api.get_experiment(eid=expected_eid)
+    experiment = api.get_experiment_by_eid(eid=expected_eid)
+
+    assert experiment.eid == expected_eid
+    assert experiment.uuid == expected_uuid
+    assert experiment.created_at == expected_datetime
+
+
+def test_get_experiment_by_uuid(monkeypatch):
+    expected_uuid = uuid4()
+    expected_eid = "test eid"
+    expected_title = "test title"
+    expected_description = "test description"
+    expected_eid = "mock_eid"
+    expected_datetime = datetime.now()
+
+    def patched_get_experiment(self, experiment_uuid):
+        return ExperimentData(
+            uuid=experiment_uuid,
+            title=expected_title,
+            description=expected_description,
+            eid=expected_eid,
+            created_at=expected_datetime,
+            updated_at=expected_datetime,
+        )
+
+    monkeypatch.setattr(AqueductClient, "get_experiment", patched_get_experiment)
+    api = API(url="http://test.com", timeout=1)
+
+    experiment = api.get_experiment_by_uuid(uuid=expected_uuid)
 
     assert experiment.eid == expected_eid
     assert experiment.uuid == expected_uuid
