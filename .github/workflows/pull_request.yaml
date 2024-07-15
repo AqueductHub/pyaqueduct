@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  pytest:
+  unit_tests:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
@@ -64,3 +64,11 @@ jobs:
 
       - name: Run unit tests and build coverage report
         run: ci/pylint.sh
+
+  integration_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run integration tests
+        run: ci/integration_tests.sh
