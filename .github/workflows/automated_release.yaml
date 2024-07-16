@@ -54,13 +54,23 @@ jobs:
           echo "Week number check is ${{ needs.confirm-action-execution.outputs.week_number_check }}"
           echo "Allow automated release value is ${{ env.allow_automated_release }}"
 
-  trigger-workflow:
-    name: Trigger release workflow
-    permissions:
-      contents: write
-    needs: [confirm-action-execution, next-version]
-    if: needs.confirm-action-execution.outputs.week_number_check == 'true' && needs.confirm-action-execution.outputs.is_release_allowed == 'true'
-    uses: ./.github/workflows/release.yaml
-    with:
-      version: ${{ needs.next-version.outputs.next_version_number }}
-    secrets: inherit
+      - name: Show the values of version
+        run: |
+          echo "Next version is ${{ steps.next_version_step.outputs.version }}"
+          echo "Week number check is ${{ needs.confirm-action-execution.outputs.week_number_check }}"
+          echo "Allow automated release value is ${{ env.allow_automated_release }}"
+
+      - name: Print next version log
+        run: |
+          echo "Supposed next version is - ${{ needs.next-version.outputs.next_version_number }}""
+
+  # trigger-workflow:
+  #   name: Trigger release workflow
+  #   permissions:
+  #     contents: write
+  #   needs: [confirm-action-execution, next-version]
+  #   if: needs.confirm-action-execution.outputs.week_number_check == 'true' && needs.confirm-action-execution.outputs.is_release_allowed == 'true'
+  #   uses: ./.github/workflows/release.yaml
+  #   with:
+  #     version: ${{ needs.next-version.outputs.next_version_number }}
+  #   secrets: inherit
