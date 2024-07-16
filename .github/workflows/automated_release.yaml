@@ -54,16 +54,13 @@ jobs:
           echo "Week number check is ${{ needs.confirm-action-execution.outputs.week_number_check }}"
           echo "Allow automated release value is ${{ env.allow_automated_release }}"
 
-      - name: Show the values of version
+  debug-log:
+    runs-on: ubuntu-latest
+    name: Print debug logs
+    steps:
+      - name: Print next version
         run: |
-          echo "Next version is ${{ steps.next_version_step.outputs.version }}"
-          echo "Week number check is ${{ needs.confirm-action-execution.outputs.week_number_check }}"
-          echo "Allow automated release value is ${{ env.allow_automated_release }}"
-
-      - name: Print next version log
-        run: |
-          echo "Supposed next version is - ${{ needs.next-version.outputs.next_version_number }}""
-
+          echo "Next version is ${{ needs.next-version.outputs.next_version_number }}"
   # trigger-workflow:
   #   name: Trigger release workflow
   #   permissions:
