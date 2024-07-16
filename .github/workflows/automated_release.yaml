@@ -55,12 +55,14 @@ jobs:
           echo "Allow automated release value is ${{ env.allow_automated_release }}"
 
   debug-log:
-    runs-on: ubuntu-latest
     name: Print debug logs
+    runs-on: ubuntu-latest
+    needs: [confirm-action-execution, next-version]
     steps:
       - name: Print next version
         run: |
           echo "Next version is ${{ needs.next-version.outputs.next_version_number }}"
+
   # trigger-workflow:
   #   name: Trigger release workflow
   #   permissions:
