@@ -20,7 +20,7 @@ jobs:
       - name: Confirm action execution
         id: week_number_check_step
         run: |
-          if (( $(date +%V) % 2 == 0 )); then
+          if (( $(date +%V) % 2 == 1 )); then
             echo "week_number_check=true" >> $GITHUB_OUTPUT
           else
             echo "week_number_check=false" >> $GITHUB_OUTPUT
