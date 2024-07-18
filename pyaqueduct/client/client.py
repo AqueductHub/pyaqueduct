@@ -326,7 +326,7 @@ class AqueductClient(BaseModel):
 
         remove_url = f"{self.url}/files/{str(experiment_uuid)}/delete_files"
         try:
-            response = post(remove_url, timeout=self.timeout, json=json.dumps({"file_list": files}))
+            response = post(remove_url, timeout=self.timeout, json={"file_list": files})
         except TransportError as error:
             raise FileRemovalError("Couldn't remove files due to transport error.") from error
 

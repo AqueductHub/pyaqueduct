@@ -113,7 +113,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                 "totalTagsCount": 15,
             }
         }
-    
+
     elif query == get_all_extensions_query:
         return {
             "extensions": [
@@ -133,7 +133,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 1",
                                     "dataType": "str",
                                     "defaultValue": "1",
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var2",
@@ -141,7 +141,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 2",
                                     "dataType": "int",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var3",
@@ -149,7 +149,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 3",
                                     "dataType": "float",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var4",
@@ -157,7 +157,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 4",
                                     "dataType": "experiment",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var5",
@@ -165,7 +165,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 5 multiline",
                                     "dataType": "textarea",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var6",
@@ -173,7 +173,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "boolean variable",
                                     "dataType": "bool",
                                     "defaultValue": "1",
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var7",
@@ -181,14 +181,9 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "select / combobox",
                                     "dataType": "select",
                                     "defaultValue": "string three",
-                                    "options": [
-                                    "string1",
-                                    "string2",
-                                    "string three",
-                                    "string4"
-                                    ]
-                                }
-                            ]
+                                    "options": ["string1", "string2", "string three", "string4"],
+                                },
+                            ],
                         },
                         {
                             "name": "echo_stderr",
@@ -201,7 +196,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 1",
                                     "dataType": "str",
                                     "defaultValue": "1",
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var2",
@@ -209,7 +204,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 2",
                                     "dataType": "int",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var3",
@@ -217,7 +212,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 3",
                                     "dataType": "float",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var4",
@@ -225,7 +220,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 4",
                                     "dataType": "experiment",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var5",
@@ -233,7 +228,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "variable 5 multiline",
                                     "dataType": "textarea",
                                     "defaultValue": None,
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var6",
@@ -241,7 +236,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "boolean variable",
                                     "dataType": "bool",
                                     "defaultValue": "1",
-                                    "options": None
+                                    "options": None,
                                 },
                                 {
                                     "name": "var7",
@@ -249,22 +244,17 @@ def patched_execute(self, query, variable_values, **kwargs):
                                     "description": "select / combobox",
                                     "dataType": "select",
                                     "defaultValue": "string three",
-                                    "options": [
-                                    "string1",
-                                    "string2",
-                                    "string three",
-                                    "string4"
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },                
+                                    "options": ["string1", "string2", "string three", "string4"],
+                                },
+                            ],
+                        },
+                    ],
+                },
             ]
         }
 
     elif query == execute_extension_action_mutation:
-        return  {
+        return {
             "executeExtension": {
                 "logExperiment": "234-4",
                 "logFile": "Dummy extension-echo-20240510-135611.log",
@@ -274,6 +264,6 @@ def patched_execute(self, query, variable_values, **kwargs):
                     "var1=a\nvar2=1\nvar3=1.0e-4\nvar4=234-4\n"
                     "var5=text\ntext\nvar6=0\nvar7=string1\n"
                     "dummykey=dummyvalue\n"
-                )
+                ),
             }
         }
