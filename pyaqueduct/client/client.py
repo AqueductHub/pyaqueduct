@@ -1,5 +1,6 @@
 """Aqueduct client class to enable experiment based operations."""
 
+import json
 import logging
 import os
 from datetime import datetime
@@ -16,9 +17,13 @@ from pydantic import BaseModel, HttpUrl, PrivateAttr
 from tqdm import tqdm
 
 from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
-from pyaqueduct.client.extension_types import ExtensionData, ExtensionExecutionResultData
+from pyaqueduct.client.extension_types import (
+    ExtensionData,
+    ExtensionExecutionResultData,
+)
 from pyaqueduct.exceptions import (
     FileDownloadError,
+    FileRemovalError,
     FileUploadError,
     ForbiddenError,
     RemoteOperationError,
@@ -27,8 +32,8 @@ from pyaqueduct.exceptions import (
 from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
     create_experiment_mutation,
-    remove_experiment_mutation,
     execute_extension_action_mutation,
+    remove_experiment_mutation,
     remove_tag_from_experiment_mutation,
     update_experiment_mutation,
 )
@@ -309,6 +314,26 @@ class AqueductClient(BaseModel):
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
+    def remove_files_from_experiment(self, experiment_uuid: UUID, files: List[str]) -> None:
+        """
+        Remove files from an experiment
+
+        Args:
+            experiment_uuid: UUID of experiment for which files has to be removed from.
+            files: List of file names to be removed.
+
+        """
+
+        remove_url = f"{self.url}/files/{str(experiment_uuid)}/delete_files"
+        try:
+            response = post(remove_url, timeout=self.timeout, json=json.dumps({"file_list": files}))
+        except TransportError as error:
+            raise FileRemovalError("Couldn't remove files due to transport error.") from error
+
+        process_response_common(codes(response.status_code))
+
+        logging.info("Successfully removed files %s from experiment.", files)
+
     def get_tags(self, limit: int, offset: int, dangling: bool = True) -> TagsData:
         """
         Get a list of existing tags
@@ -394,13 +419,13 @@ class AqueductClient(BaseModel):
             ) from error
 
     def get_extensions(self) -> List[ExtensionData]:
-        """ Get the list of extensions from the server.
+        """Get the list of extensions from the server.
 
         Returns:
             List of extension objects.
         """
         try:
-            extensions = self._gql_client.execute(
+            extensions_response = self._gql_client.execute(
                 get_all_extensions_query,
             )
         except gql_exceptions.TransportServerError as error:
@@ -412,14 +437,19 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        extensions = list(map(ExtensionData.from_dict, extensions["extensions"]))  # pylint: disable=unsubscriptable-object
-        logging.info("Fetched %s extensions", len(extensions))
-        return extensions
+        extensions_list = list(
+            map(
+                ExtensionData.from_dict,
+                extensions_response["extensions"],  # pylint: disable=unsubscriptable-object
+            )
+        )
+        logging.info("Fetched %s extensions", len(extensions_list))
+        return extensions_list
 
     def execute_extension_action(
-            self, extension: str, action: str, params: Dict[str, Any]
-        ) -> ExtensionExecutionResultData:
-        """ Executes extension action on a server.
+        self, extension: str, action: str, params: Dict[str, Any]
+    ) -> ExtensionExecutionResultData:
+        """Executes extension action on a server.
 
         Args:
             extension: extension name.
@@ -440,7 +470,7 @@ class AqueductClient(BaseModel):
                     "extension": extension,
                     "action": action,
                     "params": params_list,
-                }
+                },
             )
         except gql_exceptions.TransportServerError as error:
             if error.code:
@@ -451,8 +481,13 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        result = ExtensionExecutionResultData.from_dict(extension_result["executeExtension"])  # pylint: disable=unsubscriptable-object
+        result = ExtensionExecutionResultData.from_dict(
+            extension_result["executeExtension"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info(
             "Executed a %s / %s extension action with result code %d",
-            extension, action, result.returnCode)
+            extension,
+            action,
+            result.returnCode,
+        )
         return result

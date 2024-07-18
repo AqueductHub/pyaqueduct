@@ -79,6 +79,16 @@ class Experiment(BaseModel):
         """Remove tag from experiment."""
         self._client.remove_tag_from_experiment(experiment_uuid=self.uuid, tag=tag)
 
+    @validate_call
+    def remove_files(self, files: List[str]) -> None:
+        """Remove files from experiment.
+
+        Args:
+            files: List of file names to be removed from the experiment.
+
+        """
+        self._client.remove_files_from_experiment(experiment_uuid=self.uuid, files=files)
+
     @property
     def files(self) -> List[Tuple[str, datetime]]:
         """Get file names of expriment."""
