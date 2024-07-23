@@ -323,7 +323,7 @@ class AqueductClient(BaseModel):
 
         """
 
-        remove_url = f"{self.url}/files/{str(experiment_uuid)}/delete_files"
+        remove_url = f"{self.url}/files/{experiment_uuid}/delete_files"
         try:
             response = post(remove_url, timeout=self.timeout, json={"file_list": files})
         except TransportError as error:
