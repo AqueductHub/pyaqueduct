@@ -35,22 +35,16 @@ def test_experiment_flow():
 
     check_experiments(experiment, experiment_new)
 
-    with NamedTemporaryFile() as file1:
-        with NamedTemporaryFile() as file2:
-            with NamedTemporaryFile() as file3:
-                with NamedTemporaryFile() as file4:
-                    expected_files = [file1.name, file2.name, file3.name, file4.name]
-                    experiment.upload_file(file1.name)
-                    experiment.upload_file(file2.name)
-                    experiment.upload_file(file3.name)
-                    experiment.upload_file(file4.name)
+    with NamedTemporaryFile() as file1, NamedTemporaryFile() as file2, NamedTemporaryFile() as file3, NamedTemporaryFile() as file4:
+        experiment.upload_file(file1.name)
+        experiment.upload_file(file2.name)
+        experiment.upload_file(file3.name)
+        experiment.upload_file(file4.name)
 
-                    experiment.remove_files(
-                        files=[file1.name.split("/")[-1], file2.name.split("/")[-1]]
-                    )
-                    assert sorted([item[0] for item in experiment.files]) == sorted(
-                        [file3.name.split("/")[-1], file4.name.split("/")[-1]]
-                    )
+        experiment.remove_files(files=[file1.name.split("/")[-1], file2.name.split("/")[-1]])
+        assert sorted([item[0] for item in experiment.files]) == sorted(
+            [file3.name.split("/")[-1], file4.name.split("/")[-1]]
+        )
 
 
 def test_remove_experiment_by_eid():

@@ -327,7 +327,7 @@ class AqueductClient(BaseModel):
         try:
             response = post(remove_url, timeout=self.timeout, json={"file_list": files})
         except TransportError as error:
-            raise FileRemovalError("Couldn't remove files due to transport error.") from error
+            raise FileRemovalError("Couldn't remove files due to server error.") from error
 
         process_response_common(codes(response.status_code))
 
