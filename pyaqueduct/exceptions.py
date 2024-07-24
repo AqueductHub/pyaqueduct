@@ -27,3 +27,7 @@ class FileUploadError(PyAqueductError):
 
 class FileDownloadError(PyAqueductError):
     """Interrupted download error."""
+
+
+class FileRemovalError(PyAqueductError):
+    """File removal error."""

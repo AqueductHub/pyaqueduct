@@ -202,7 +202,7 @@ def test_execute_extension_action(monkeypatch):
             "var1": "a",
             "var2": 1,
             "var3": False,
-        }
+        },
     )
     assert exec_result.returnCode == 0
     assert exec_result.stdout != ""

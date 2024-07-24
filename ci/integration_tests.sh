@@ -16,5 +16,7 @@ docker-compose -f $PROJECT_ROOT/containers/integration_tests/docker-compose.yml 
 echo "Installing dependencies"
 docker exec --workdir /workspace pyaqueduct-host-dev poetry install 
 
+sleep 5s # let aqueduct core service to start
+
 echo "Running integration tests"
 docker exec --workdir /workspace pyaqueduct-host-dev ./scripts/run_integration_tests.sh

@@ -4,11 +4,11 @@ from datetime import datetime
 from uuid import uuid4
 
 from gql.client import SyncClientSession
-from tests.unittests.mock import patched_execute
 
-from pyaqueduct.extensions import Extension, ExtensionAction
 from pyaqueduct.api import API
 from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
+from pyaqueduct.extensions import Extension, ExtensionAction
+from tests.unittests.mock import patched_execute
 
 
 def test_create_experiment(monkeypatch):
