@@ -68,3 +68,22 @@ class ExtensionExecutionResultData(BaseModel):
             Object populated with server response data.
         """
         return ExtensionExecutionResultData(**data)
+
+
+class ExtensionCancelResultData(BaseModel):
+    """Results for task cancellation"""
+
+    returnCode: int
+    message: str
+
+    @classmethod
+    def from_dict(cls, data: dict) -> ExtensionCancelResultData:
+        """Compose an object from a server response.
+
+        Args:
+            data: server response
+
+        Returns:
+            Object populated with server response data
+        """
+        return ExtensionCancelResultData(**data)

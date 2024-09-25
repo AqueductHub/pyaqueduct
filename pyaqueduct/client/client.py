@@ -17,6 +17,7 @@ from tqdm import tqdm
 
 from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
 from pyaqueduct.client.extension_types import (
+    ExtensionCancelResultData,
     ExtensionData,
     ExtensionExecutionResultData,
 )
@@ -30,6 +31,7 @@ from pyaqueduct.exceptions import (
 )
 from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
+    cancel_task_mutation,
     create_experiment_mutation,
     execute_extension_action_mutation,
     remove_experiment_mutation,
@@ -134,9 +136,7 @@ class AqueductClient(BaseModel):
             create_experiment_mutation,
             {"title": title, "description": description, "tags": tags or []},
         )
-        experiment_obj = ExperimentData.from_dict(
-            data["createExperiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["createExperiment"])
         logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
 
@@ -163,9 +163,7 @@ class AqueductClient(BaseModel):
                 "description": description,
             },
         )
-        experiment_obj = ExperimentData.from_dict(
-            data["updateExperiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["updateExperiment"])
         logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
 
@@ -204,9 +202,7 @@ class AqueductClient(BaseModel):
                 "tags": tags,
             },
         )
-        experiments_obj = ExperimentsInfo.from_dict(
-            data["experiments"]  # pylint: disable=unsubscriptable-object
-        )
+        experiments_obj = ExperimentsInfo.from_dict(data["experiments"])
         logging.info(
             "Fetched %s experiments, total %s experiments",
             len(experiments_obj.experiments),
@@ -229,9 +225,7 @@ class AqueductClient(BaseModel):
             get_experiment_query,
             {"type": "UUID", "value": str(experiment_uuid)},
         )
-        experiment_obj = ExperimentData.from_dict(
-            data["experiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["experiment"])
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -250,9 +244,7 @@ class AqueductClient(BaseModel):
             get_experiment_query,
             {"type": "EID", "value": eid},
         )
-        experiment_obj = ExperimentData.from_dict(
-            data["experiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["experiment"])
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -272,9 +264,7 @@ class AqueductClient(BaseModel):
             add_tags_to_experiment_mutation,
             {"uuid": str(experiment_uuid), "tags": tags},
         )
-        experiment_obj = ExperimentData.from_dict(
-            data["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["addTagsToExperiment"])
         logging.info("Added tags %s to experiment <%s>", tags, experiment_obj.title)
         return experiment_obj
 
@@ -307,9 +297,7 @@ class AqueductClient(BaseModel):
             {"uuid": str(experiment_uuid), "tag": tag},
         )
 
-        experiment_obj = ExperimentData.from_dict(
-            data["removeTagFromExperiment"]  # pylint: disable=unsubscriptable-object
-        )
+        experiment_obj = ExperimentData.from_dict(data["removeTagFromExperiment"])
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
@@ -349,7 +337,7 @@ class AqueductClient(BaseModel):
             get_all_tags_query,
             {"limit": limit, "offset": offset, "dangling": dangling},
         )
-        tags_obj = TagsData.from_dict(data["tags"])  # pylint: disable=unsubscriptable-object
+        tags_obj = TagsData.from_dict(data["tags"])
         logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
         return tags_obj
 
@@ -439,7 +427,7 @@ class AqueductClient(BaseModel):
         extensions_list = list(
             map(
                 ExtensionData.from_dict,
-                extensions_response["extensions"],  # pylint: disable=unsubscriptable-object
+                extensions_response["extensions"],
             )
         )
         logging.info("Fetched %s extensions", len(extensions_list))
@@ -480,13 +468,34 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        result = ExtensionExecutionResultData.from_dict(
-            extension_result["executeExtension"]  # pylint: disable=unsubscriptable-object
-        )
+        result = ExtensionExecutionResultData.from_dict(extension_result["executeExtension"])
         logging.info(
             "Executed a %s / %s extension action with result code %d",
             extension,
             action,
             result.returnCode,
         )
+        return result
+
+    def cancel_task(self, task_id: str) -> ExtensionCancelResultData:
+        """Stops and cancels task running in Celery
+
+        Args:
+            task_id: Task identifier
+        """
+        try:
+            revoke_result = self._gql_client.execute(
+                cancel_task_mutation,
+                variable_values={"taskId": task_id},
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occoured in the remote operation"
+            )
+
+        result = ExtensionCancelResultData.from_dict(revoke_result["cancelTask"])
         return result
