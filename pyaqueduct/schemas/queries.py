@@ -93,9 +93,10 @@ get_all_tags_query = gql(
     """
 )
 
+
 get_all_extensions_query = gql(
     """
-    query MyQuery {
+    query GetAllExtensionsQuery {
         extensions {
             name, authors, description,
             actions {
@@ -109,6 +110,107 @@ get_all_extensions_query = gql(
                     options
                 }
             }
+        }
+    }
+    """
+)
+
+
+get_task_query = gql(
+    """
+    query GetTaskQuery (
+        $taskId: String!,
+    ) {
+        task (
+            taskId: $taskId
+        ) {
+            taskId
+            taskStatus
+            resultCode
+            extensionName
+            actionName
+            createdBy
+            receivedAt
+            endedAt
+            stdOut
+            stdErr
+            experiment {
+                createdAt
+                createdBy
+                description
+                eid
+                tags
+                title
+                updatedAt
+                uuid
+            }
+            parameters {
+                key {
+                    dataType
+                    defaultValue
+                    description
+                    displayName
+                    name
+                    options
+                }
+                value
+            }
+        }
+    }
+    """
+)
+
+
+get_tasks_query = gql(
+    """
+    query GetTasksQuery (
+        $limit: Int!,
+        $offset: Int!,
+        $extensionName: String = null,
+        $experimentUuid: String = null,
+        $actionName: String = null,
+        $username: String = null,
+        $startDate: DateTime = null,
+        $endDate: DateTime = null,
+    ) {
+        tasks (
+            filters: {
+                experiment: {
+                    type: UUID,
+                    value: $experimentUuid
+                },
+                extensionName: $extensionName,
+                actionName: $actionName,
+                username: $username,
+                startDate: $startDate,
+                endDate: $endDate,
+            },
+            offset: $offset,
+            limit: $limit,
+        ) {
+            tasksData {
+                taskId
+                extensionName
+                actionName
+                receivedAt
+                createdBy
+                endedAt
+                resultCode
+                stdErr
+                stdOut
+                taskStatus
+                experiment {
+                    uuid
+                    title
+                    description
+                    createdAt
+                    createdBy
+                    eid
+                    tags
+                    updatedAt
+                }
+            }
+            totalTasksCount
         }
     }
     """

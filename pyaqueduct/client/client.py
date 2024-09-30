@@ -21,6 +21,7 @@ from pyaqueduct.client.extension_types import (
     ExtensionData,
     ExtensionExecutionResultData,
 )
+from pyaqueduct.client.task_types import TaskData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileRemovalError,
@@ -43,6 +44,8 @@ from pyaqueduct.schemas.queries import (
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
+    get_task_query,
+    get_tasks_query,
 )
 
 
@@ -286,11 +289,11 @@ class AqueductClient(BaseModel):
         Remove a tag from an experiment
 
         Args:
-        - experiment_uuid (UUID): UUID of experiment frin which tag has to be removed
-        - tag (str): Tag to be removed from experiment
+            experiment_uuid (UUID): UUID of experiment frin which tag has to be removed
+            tag (str): Tag to be removed from experiment
 
         Returns:
-        Experiment: Experiment having tag removed
+            Experiment: Experiment having tag removed
         """
         data = self.fetch_response(
             remove_tag_from_experiment_mutation,
@@ -326,9 +329,9 @@ class AqueductClient(BaseModel):
         Get a list of existing tags
 
         Args:
-        - limit (int): Number of tags to be fetched
-        - offset (offset): Number of tags to skip
-        - dangling (bool): If tags not linked to any experiment should be included or not
+            limit (int): Number of tags to be fetched
+            offset (offset): Number of tags to skip
+            dangling (bool): If tags not linked to any experiment should be included or not
 
         Returns:
         List[str]: A list of all existing tags
@@ -475,6 +478,78 @@ class AqueductClient(BaseModel):
             action,
             result.returnCode,
         )
+        return result
+
+    def get_task(self, task_id: str) -> TaskData:
+        """Get details for a submitted taks
+
+        Args:
+            task_id: Task identifier
+        """
+        try:
+            task_result = self._gql_client.execute(
+                get_task_query, variable_values={"taskId": task_id}
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occoured in the remote operation"
+            )
+
+        result = TaskData.from_dict(task_result["task"])
+        return result
+
+    def get_tasks(
+        self,
+        limit: int,
+        offset: int,
+        extensionName: Optional[str] = None,
+        experimentUuid: Optional[str] = None,
+        actionName: Optional[str] = None,
+        username: Optional[str] = None,
+        startDate: Optional[datetime] = None,
+        endDate: Optional[datetime] = None,
+    ) -> TaskData:
+        """Get details for a submitted taks
+
+        Args:
+            limit: int,
+            offset: int,
+            extensionName: Optional[str] = None,
+            experimentUuid: Optional[str] = None,
+            actionName: Optional[str] = None,
+            username: Optional[str] = None,
+            startDate: Optional[DateTime] = None,
+            endDate: Optional[DateTime] = None,
+
+        """
+        try:
+            task_result = self._gql_client.execute(
+                get_tasks_query,
+                variable_values={
+                    "limit": limit,
+                    "offset": offset,
+                    "extensionName": extensionName,
+                    "experimentUuid": experimentUuid,
+                    "actionName": actionName,
+                    "username": username,
+                    "startDate": startDate,
+                    "endDate": endDate,
+                },
+            )
+        except gql_exceptions.TransportServerError as error:
+            if error.code:
+                process_response_common(codes(error.code))
+            raise
+        except gql_exceptions.TransportQueryError as error:
+            raise RemoteOperationError(
+                error.errors if error.errors else "Unknown error occoured in the remote operation"
+            )
+
+        result = TaskData.from_dict(task_result["task"])
         return result
 
     def cancel_task(self, task_id: str) -> ExtensionCancelResultData:
