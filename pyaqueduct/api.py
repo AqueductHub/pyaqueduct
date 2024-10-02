@@ -191,25 +191,42 @@ class API(BaseModel):
         Returns:
             Task object
         """
-        task_data = self._client.get_task(task_id=task_id)
         return Task(
             client=self._client,
             task_id=task_id
         )
 
     @validate_call
-    def get_tasks(self, task_id) -> List[Task]:
+    def get_tasks(  # pylint: disable=too-many-arguments, duplicate-code
+        self,
+        limit: PositiveInt = 10,
+        offset: NonNegativeInt = 0,
+        extension_name: Optional[str] = None,
+        experiment_uuid: Optional[str] = None,
+        action_name: Optional[str] = None,
+        username: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+    ) -> List[Task]:
         """Get task by passing task_id.
 
         Returns:
             Task object
         """
-        tasks = self._client.get_tasks(task_id=task_id)
+        tasks = self._client.get_tasks(
+            limit=limit,
+            offset=offset,
+            extension_name=extension_name,
+            experiment_uuid=experiment_uuid,
+            action_name=action_name,
+            username=username,
+            start_date=start_date,
+            end_date=end_date,
+        )
         return [
             Task(
                 client=self._client,
-                task_id=task_id
+                task_id=task.task_id,
             )
             for task in tasks
         ]
-

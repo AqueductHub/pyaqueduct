@@ -20,16 +20,16 @@ class Task(BaseModel):
     task_id: str
     """UUID for task."""
 
-    extensionName: str
+    extension_name: str
     """Name of extension to which action belongs."""
 
-    actionName: str
+    action_name: str
     """Name of action called."""
 
-    createdBy: str
+    created_by: str
     """User who executed the task."""
 
-    receivedAt: datetime
+    received_at: datetime
     """Time at which action was executed."""
 
     experiment: ExperimentData
@@ -39,35 +39,35 @@ class Task(BaseModel):
         self._client = client
 
         task_data = self._client.get_task(self.task_id)
-        self.extensionName = task_data.extensionName
-        self.actionName = task_data.actionName
-        self.createdBy = task_data.createdBy
-        self.receivedAt = task_data.receivedAt
+        self.extension_name = task_data.extension_name
+        self.action_name = task_data.action_name
+        self.created_by = task_data.created_by
+        self.received_at = task_data.received_at
         self.experiment = task_data.experiment
 
         super().__init__(task_id=task_id)
 
     @property
-    def taskStatus(self) -> str:
+    def task_status(self) -> str:
         """Status of task."""
-        return self._client.get_task(self.task_id).taskStatus
+        return self._client.get_task(self.task_id).task_status
 
     @property
-    def resultCode(self) -> str:
+    def result_code(self) -> str:
         """Result code for executed process."""
-        return self._client.get_task(self.task_id).resultCode
+        return self._client.get_task(self.task_id).result_code
 
     @property
-    def endedAt(self) -> datetime:
+    def ended_at(self) -> datetime:
         """Time at which execution of task was completed."""
-        return self._client.get_task(self.task_id).endedAt
+        return self._client.get_task(self.task_id).ended_at
 
     @property
-    def stdOut(self) -> str:
+    def std_out(self) -> str:
         """Output string of task execution."""
-        return self._client.get_task(self.task_id).stdOut
+        return self._client.get_task(self.task_id).std_out
 
     @property
-    def stdErr(self) -> str:
+    def std_err(self) -> str:
         """Errors propagated during task execution."""
-        return self._client.get_task(self.task_id).stdErr
+        return self._client.get_task(self.task_id).std_err
