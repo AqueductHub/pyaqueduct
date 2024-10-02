@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from datetime import datetime
+from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -20,14 +22,14 @@ class ParameterData(BaseModel):
 class TaskData(BaseModel):
     """Parameter definition for a task."""
 
-    taskId: str
+    taskId: UUID
     taskStatus: str
     resultCode: str
     extensionName: str
     actionName: str
     createdBy: str
-    receivedAt: str
-    endedAt: str
+    receivedAt: datetime
+    endedAt: datetime
     stdOut: str
     stdErr: str
     experiment: ExperimentData

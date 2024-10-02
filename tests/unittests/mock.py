@@ -12,6 +12,7 @@ from pyaqueduct.schemas.queries import (
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
+    get_tasks_query,
 )
 
 
@@ -250,7 +251,305 @@ def patched_execute(self, query, variable_values, **kwargs):
                         },
                     ],
                 },
-            ]
+            ],
+        }
+
+    elif query == get_tasks_query:
+        return {
+            "data": {
+                "tasks": {
+                    "tasksData": [
+                        {
+                            "actionName": "echo",
+                            "createdBy": "admin",
+                            "endedAt": "2024-09-25T15:31:42.922265+00:00",
+                            "extensionName": "Dummy extension",
+                            "parameters": [
+                                {
+                                    "key": {
+                                        "dataType": "str",
+                                        "defaultValue": "1",
+                                        "description": "variable 1",
+                                        "displayName": None,
+                                        "name": "var1",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "int",
+                                        "defaultValue": None,
+                                        "description": "variable 2",
+                                        "displayName": "some display name",
+                                        "name": "var2",
+                                        "options": None,
+                                    },
+                                    "value": "2",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "float",
+                                        "defaultValue": None,
+                                        "description": "variable 3",
+                                        "displayName": None,
+                                        "name": "var3",
+                                        "options": None,
+                                    },
+                                    "value": "3",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "experiment",
+                                        "defaultValue": None,
+                                        "description": "variable 4",
+                                        "displayName": None,
+                                        "name": "var4",
+                                        "options": None,
+                                    },
+                                    "value": "240905-72",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "textarea",
+                                        "defaultValue": None,
+                                        "description": "variable 5 multiline",
+                                        "displayName": None,
+                                        "name": "var5",
+                                        "options": None,
+                                    },
+                                    "value": "5",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "bool",
+                                        "defaultValue": "1",
+                                        "description": "boolean variable",
+                                        "displayName": None,
+                                        "name": "var6",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "select",
+                                        "defaultValue": "string three",
+                                        "description": "select / combobox",
+                                        "displayName": None,
+                                        "name": "var7",
+                                        "options": [
+                                            "string1",
+                                            "string2",
+                                            "string three",
+                                            "string4",
+                                        ],
+                                    },
+                                    "value": "string three",
+                                },
+                            ],
+                            "receivedAt": "2024-09-25T15:30:55.447482+00:00",
+                            "resultCode": None,
+                            "stdErr": "terminated",
+                            "stdOut": None,
+                            "taskId": "7cc868d9-5b3c-4785-bf98-5ed982b1d9ad",
+                            "taskStatus": "REVOKED",
+                        },
+                        {
+                            "actionName": "echo",
+                            "createdBy": "admin",
+                            "endedAt": "2024-09-24T13:46:42.586371+00:00",
+                            "extensionName": "Dummy extension",
+                            "parameters": [
+                                {
+                                    "key": {
+                                        "dataType": "str",
+                                        "defaultValue": "1",
+                                        "description": "variable 1",
+                                        "displayName": None,
+                                        "name": "var1",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "int",
+                                        "defaultValue": None,
+                                        "description": "variable 2",
+                                        "displayName": "some display name",
+                                        "name": "var2",
+                                        "options": None,
+                                    },
+                                    "value": "2",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "float",
+                                        "defaultValue": None,
+                                        "description": "variable 3",
+                                        "displayName": None,
+                                        "name": "var3",
+                                        "options": None,
+                                    },
+                                    "value": "3",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "experiment",
+                                        "defaultValue": None,
+                                        "description": "variable 4",
+                                        "displayName": None,
+                                        "name": "var4",
+                                        "options": None,
+                                    },
+                                    "value": "240905-72",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "textarea",
+                                        "defaultValue": None,
+                                        "description": "variable 5 multiline",
+                                        "displayName": None,
+                                        "name": "var5",
+                                        "options": None,
+                                    },
+                                    "value": "5",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "bool",
+                                        "defaultValue": "1",
+                                        "description": "boolean variable",
+                                        "displayName": None,
+                                        "name": "var6",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "select",
+                                        "defaultValue": "string three",
+                                        "description": "select / combobox",
+                                        "displayName": None,
+                                        "name": "var7",
+                                        "options": [
+                                            "string1",
+                                            "string2",
+                                            "string three",
+                                            "string4",
+                                        ],
+                                    },
+                                    "value": "string three",
+                                },
+                            ],
+                            "receivedAt": "2024-09-24T13:45:59.863575+00:00",
+                            "resultCode": None,
+                            "stdErr": "terminated",
+                            "stdOut": None,
+                            "taskId": "2a8d1dc5-12b0-4582-89f5-755a5948093e",
+                            "taskStatus": "REVOKED",
+                        },
+                        {
+                            "actionName": "echo",
+                            "createdBy": "admin",
+                            "endedAt": "2024-09-24T13:45:35.620347+00:00",
+                            "extensionName": "Dummy extension",
+                            "parameters": [
+                                {
+                                    "key": {
+                                        "dataType": "str",
+                                        "defaultValue": "1",
+                                        "description": "variable 1",
+                                        "displayName": None,
+                                        "name": "var1",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "int",
+                                        "defaultValue": None,
+                                        "description": "variable 2",
+                                        "displayName": "some display name",
+                                        "name": "var2",
+                                        "options": None,
+                                    },
+                                    "value": "2",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "float",
+                                        "defaultValue": None,
+                                        "description": "variable 3",
+                                        "displayName": None,
+                                        "name": "var3",
+                                        "options": None,
+                                    },
+                                    "value": "3",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "experiment",
+                                        "defaultValue": None,
+                                        "description": "variable 4",
+                                        "displayName": None,
+                                        "name": "var4",
+                                        "options": None,
+                                    },
+                                    "value": "240905-72",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "textarea",
+                                        "defaultValue": None,
+                                        "description": "variable 5 multiline",
+                                        "displayName": None,
+                                        "name": "var5",
+                                        "options": None,
+                                    },
+                                    "value": "5",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "bool",
+                                        "defaultValue": "1",
+                                        "description": "boolean variable",
+                                        "displayName": None,
+                                        "name": "var6",
+                                        "options": None,
+                                    },
+                                    "value": "1",
+                                },
+                                {
+                                    "key": {
+                                        "dataType": "select",
+                                        "defaultValue": "string three",
+                                        "description": "select / combobox",
+                                        "displayName": None,
+                                        "name": "var7",
+                                        "options": [
+                                            "string1",
+                                            "string2",
+                                            "string three",
+                                            "string4",
+                                        ],
+                                    },
+                                    "value": "string three",
+                                },
+                            ],
+                            "receivedAt": "2024-09-24T13:44:02.464108+00:00",
+                            "resultCode": None,
+                            "stdErr": "terminated",
+                            "stdOut": None,
+                            "taskId": "1af71a66-6e57-4cc8-9970-9af17f64000a",
+                            "taskStatus": "REVOKED",
+                        },
+                    ]
+                }
+            }
         }
 
     elif query == execute_extension_action_mutation:

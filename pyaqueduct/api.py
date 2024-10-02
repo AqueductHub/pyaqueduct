@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from datetime import datetime
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import (
     BaseModel,
@@ -20,6 +20,7 @@ from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import Experiment
 from pyaqueduct.extensions import Extension
 from pyaqueduct.settings import Settings
+from pyaqueduct.task import Task
 
 
 class API(BaseModel):
@@ -179,3 +180,13 @@ class API(BaseModel):
             )
             for extension_data in self._client.get_extensions()
         ]
+
+    @validate_call
+    def get_task(self, task_id) -> Task:
+        """Get task by passing task_id.
+
+        Returns:
+            Task object
+        """
+        task_data = self._client.get_task(task_id=task_id)
+        return Task(client=self._client, task_id=task_id)
