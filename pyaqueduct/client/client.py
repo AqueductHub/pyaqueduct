@@ -506,25 +506,24 @@ class AqueductClient(BaseModel):
         self,
         limit: int,
         offset: int,
-        extensionName: Optional[str] = None,
-        experimentUuid: Optional[str] = None,
-        actionName: Optional[str] = None,
+        extension_name: Optional[str] = None,
+        experiment_uuid: Optional[str] = None,
+        action_name: Optional[str] = None,
         username: Optional[str] = None,
-        startDate: Optional[datetime] = None,
-        endDate: Optional[datetime] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
     ) -> TaskData:
         """Get details for a submitted taks
 
         Args:
-            limit: int,
-            offset: int,
-            extensionName: Optional[str] = None,
-            experimentUuid: Optional[str] = None,
-            actionName: Optional[str] = None,
-            username: Optional[str] = None,
-            startDate: Optional[DateTime] = None,
-            endDate: Optional[DateTime] = None,
-
+            limit: Pagination field, number of tasks to be fetched.
+            offset: Pagination field, number of tasks to skip.
+            extensionName: Name of extension for which task was ran.
+            actionName: Name of action for which task was ran.
+            experimentUuid: Uuid of experiment for which task was ran.
+            username: Username of user who ran the task.
+            startDate: Start datetime to filter experiments (timezone aware).
+            endDate: End datetime to filter experiments to (timezone aware).
         """
         try:
             task_result = self._gql_client.execute(

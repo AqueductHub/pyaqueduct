@@ -35,6 +35,18 @@ class Task(BaseModel):
     experiment: ExperimentData
     """Experiment to which task belongs"""
 
+    def __init__(self, client: AqueductClient, task_id: str):
+        self._client = client
+
+        task_data = self._client.get_task(self.task_id)
+        self.extensionName = task_data.extensionName
+        self.actionName = task_data.actionName
+        self.createdBy = task_data.createdBy
+        self.receivedAt = task_data.receivedAt
+        self.experiment = task_data.experiment
+
+        super().__init__(task_id=task_id)
+
     @property
     def taskStatus(self) -> str:
         """Status of task."""
@@ -59,15 +71,3 @@ class Task(BaseModel):
     def stdErr(self) -> str:
         """Errors propagated during task execution."""
         return self._client.get_task(self.task_id).stdErr
-
-    def __init__(self, client: AqueductClient, task_id: str):
-        self._client = client
-
-        task_data = self._client.get_task(self.task_id)
-        self.extensionName = task_data.extensionName
-        self.actionName = task_data.actionName
-        self.createdBy = task_data.createdBy
-        self.receivedAt = task_data.receivedAt
-        self.experiment = task_data.experiment
-
-        super().__init__(task_id=task_id)

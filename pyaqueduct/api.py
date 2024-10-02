@@ -182,11 +182,34 @@ class API(BaseModel):
         ]
 
     @validate_call
-    def get_task(self, task_id) -> Task:
+    def get_task(
+        self,
+        task_id
+    ) -> Task:
         """Get task by passing task_id.
 
         Returns:
             Task object
         """
         task_data = self._client.get_task(task_id=task_id)
-        return Task(client=self._client, task_id=task_id)
+        return Task(
+            client=self._client,
+            task_id=task_id
+        )
+
+    @validate_call
+    def get_tasks(self, task_id) -> List[Task]:
+        """Get task by passing task_id.
+
+        Returns:
+            Task object
+        """
+        tasks = self._client.get_tasks(task_id=task_id)
+        return [
+            Task(
+                client=self._client,
+                task_id=task_id
+            )
+            for task in tasks
+        ]
+
