@@ -22,16 +22,16 @@ class ParameterData(BaseModel):
 class TaskData(BaseModel):
     """Parameter definition for a task."""
 
-    taskId: UUID
-    taskStatus: str
-    resultCode: str
-    extensionName: str
-    actionName: str
-    createdBy: str
-    receivedAt: datetime
-    endedAt: datetime
-    stdOut: str
-    stdErr: str
+    task_id: UUID
+    task_status: str
+    result_code: int
+    extension_name: str
+    action_name: str
+    created_by: str
+    received_at: datetime
+    ended_at: datetime
+    std_out: str
+    std_err: str
     experiment: ExperimentData
 
     @classmethod
@@ -44,14 +44,28 @@ class TaskData(BaseModel):
         Returns:
             Object populated with server response data.
         """
-        return TaskData(**data)
+        from json import dumps
+        print(dumps(data, indent=4))
+        return cls(
+            task_id=UUID(data["taskId"]),
+            task_status=data["taskStatus"],
+            result_code=data["resultCode"],
+            extension_name=data["extensionName"],
+            action_name=data["actionName"],
+            created_by=data["createdBy"],
+            received_at=data["receivedAt"],
+            ended_at=data["endedAt"],
+            std_out=data["stdOut"],
+            std_err=data["stdErr"],
+            experiment=ExperimentData.from_dict(data["experiment"])
+        )
 
 
 class TasksData(BaseModel):
     """Parameter definition for tasks"""
 
     tasks: List[TaskData]
-    tasksCount: int
+    total_count: int
 
     @classmethod
     def from_dict(cls, data: dict) -> TasksData:
@@ -63,4 +77,13 @@ class TasksData(BaseModel):
         Returns:
             Object populated with server response data
         """
-        return TasksData(**data)
+    @classmethod
+    def from_dict(cls, data):
+        """Convert tag data class to a dictionary"""
+        return cls(
+            tasks=[
+                TaskData.from_dict(task_data) for task_data in data["tasksData"]
+            ],
+            total_count=data["totalTasksCount"],
+        )
+

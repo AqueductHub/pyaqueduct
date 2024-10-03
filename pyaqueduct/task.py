@@ -17,7 +17,7 @@ class Task(BaseModel):
     _client: AqueductClient
     "Client object reference."
 
-    task_id: str
+    uuid: UUID
     """UUID for task."""
 
     extension_name: str
@@ -53,7 +53,7 @@ class Task(BaseModel):
         return self._client.get_task(self.task_id).task_status
 
     @property
-    def result_code(self) -> str:
+    def result_code(self) -> int:
         """Result code for executed process."""
         return self._client.get_task(self.task_id).result_code
 

@@ -130,28 +130,36 @@ get_task_query = gql(
             extensionName
             actionName
             createdBy
+            updatedAtclear
             receivedAt
             endedAt
             stdOut
             stdErr
             experiment {
-                createdAt
-                createdBy
-                description
                 eid
-                tags
-                title
-                updatedAt
                 uuid
+                title
+                description
+                tags
+                createdAt
+                updatedAt
+                createdBy
+                files {
+                    modifiedAt
+                    name
+                    path
+                }
             }
             parameters {
                 key {
+                    name
+                    options
                     dataType
                     defaultValue
                     description
                     displayName
-                    name
-                    options
+                    createdAt
+                    updatedAt
                 }
                 value
             }
@@ -167,26 +175,21 @@ get_tasks_query = gql(
         $limit: Int!,
         $offset: Int!,
         $extensionName: String = null,
-        $experimentUuid: String = null,
         $actionName: String = null,
         $username: String = null,
         $startDate: DateTime = null,
         $endDate: DateTime = null,
     ) {
         tasks (
+            offset: $offset,
+            limit: $limit,
             filters: {
-                experiment: {
-                    type: UUID,
-                    value: $experimentUuid
-                },
                 extensionName: $extensionName,
                 actionName: $actionName,
                 username: $username,
                 startDate: $startDate,
                 endDate: $endDate,
-            },
-            offset: $offset,
-            limit: $limit,
+            }
         ) {
             tasksData {
                 taskId
@@ -208,6 +211,11 @@ get_tasks_query = gql(
                     eid
                     tags
                     updatedAt
+                    files {
+                        modifiedAt
+                        name
+                        path
+                    }
                 }
             }
             totalTasksCount

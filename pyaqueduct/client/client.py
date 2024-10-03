@@ -530,7 +530,10 @@ class AqueductClient(BaseModel):
             },
         )
 
-        result = TaskData.from_dict(task_result["task"]) # pylint: disable=unsubscriptable-object
+        result = [
+            TaskData.from_dict(task)
+            for task in task_result["tasks"]["tasksData"]
+        ]
         return result
 
     def cancel_task(self, task_id: str) -> ExtensionCancelResultData:
