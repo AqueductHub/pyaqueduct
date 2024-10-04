@@ -60,7 +60,7 @@ def process_response_common(code: codes) -> None:
     if code is codes.UNAUTHORIZED:
         raise UnAuthorizedError("API token couldn't be verified or is missing.") from None
 
-    raise RemoteOperationError("Remove operation failed.")
+    raise RemoteOperationError("Remote operation failed.")
 
 
 class AqueductClient(BaseModel):
@@ -532,7 +532,7 @@ class AqueductClient(BaseModel):
 
         result = [
             TaskData.from_dict(task)
-            for task in task_result["tasks"]["tasksData"]
+            for task in task_result["tasks"]["tasksData"] # pylint: disable=unsubscriptable-object
         ]
         return result
 
@@ -545,7 +545,11 @@ class AqueductClient(BaseModel):
         revoke_result = self.fetch_response(
             cancel_task_mutation,
             variable_values={"taskId": task_id},
-        )
+        )["cancelTask"]
 
-        result = ExtensionCancelResultData.from_dict(revoke_result["cancelTask"]) # pylint: disable=unsubscriptable-object
+        print("£"*200)
+        print(revoke_result)
+        print("£"*200)
+
+        result = ExtensionCancelResultData.from_dict(revoke_result) # pylint: disable=unsubscriptable-object
         return result

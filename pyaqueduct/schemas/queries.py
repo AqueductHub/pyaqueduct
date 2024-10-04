@@ -119,31 +119,30 @@ get_all_extensions_query = gql(
 get_task_query = gql(
     """
     query GetTaskQuery (
-        $taskId: String!,
+        $taskId: UUID!,
     ) {
         task (
             taskId: $taskId
         ) {
             taskId
-            taskStatus
-            resultCode
             extensionName
             actionName
-            createdBy
-            updatedAtclear
             receivedAt
+            createdBy
             endedAt
-            stdOut
+            resultCode
             stdErr
+            stdOut
+            taskStatus
             experiment {
-                eid
                 uuid
                 title
                 description
-                tags
                 createdAt
-                updatedAt
                 createdBy
+                eid
+                tags
+                updatedAt
                 files {
                     modifiedAt
                     name
@@ -152,14 +151,12 @@ get_task_query = gql(
             }
             parameters {
                 key {
-                    name
-                    options
                     dataType
                     defaultValue
                     description
                     displayName
-                    createdAt
-                    updatedAt
+                    options
+                    name
                 }
                 value
             }
@@ -216,6 +213,17 @@ get_tasks_query = gql(
                         name
                         path
                     }
+                }
+                parameters {
+                    key {
+                        dataType
+                        defaultValue
+                        description
+                        displayName
+                        options
+                        name
+                    }
+                    value
                 }
             }
             totalTasksCount
