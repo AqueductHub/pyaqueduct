@@ -1,3 +1,5 @@
+"""Task module."""
+
 from uuid import UUID
 from datetime import datetime
 from typing import List
@@ -7,7 +9,6 @@ from pyaqueduct.client import AqueductClient
 from pyaqueduct.client.extension_types import ExtensionCancelResultData
 from pyaqueduct.client.task_types import ParameterData
 from pyaqueduct.client.experiment_types import ExperimentData
-from pyaqueduct.client.extension_types import ExtensionParameterData
 
 
 class Task(BaseModel):
@@ -19,12 +20,6 @@ class Task(BaseModel):
     uuid: UUID
     """UUID for task."""
 
-    extension_name: str
-    """Name of extension to which action belongs."""
-
-    action_name: str
-    """Name of action called."""
-
     created_by: str
     """User who executed the task."""
 
@@ -33,6 +28,12 @@ class Task(BaseModel):
 
     experiment: ExperimentData
     """Experiment to which task belongs"""
+
+    extension_name: str
+    """Name of extension to which action belongs."""
+
+    action_name: str
+    """Name of action called."""
 
     parameters: List[ParameterData]
     """List of parameters with key and value passed to action"""

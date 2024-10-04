@@ -542,7 +542,7 @@ class AqueductClient(BaseModel):
         Args:
             task_id: Task identifier
         """
-        revoke_result = self.fetch_response(
+        revoke_result = self.fetch_response( # pylint: disable=unsubscriptable-object
             cancel_task_mutation,
             variable_values={"taskId": task_id},
         )["cancelTask"]
