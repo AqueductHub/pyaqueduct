@@ -20,7 +20,7 @@ def test_experiment_flow():
     expected_title = "test title"
     expected_description = "test description"
 
-    api = API(url="http://aqueductcore:8000", timeout=1)
+    api = API(url="http://host.docker.internal:8000", timeout=1)
 
     experiment = api.create_experiment(title=expected_title, description=expected_description)
 
@@ -51,7 +51,7 @@ def test_remove_experiment_by_eid():
     expected_title = "test title"
     expected_description = "test description"
 
-    api = API(url="http://aqueductcore:8000", timeout=1)
+    api = API(url="http://host.docker.internal:8000", timeout=1)
 
     experiment = api.create_experiment(title=expected_title, description=expected_description)
 
@@ -64,7 +64,7 @@ def test_find_experiments():
 
     experiments_list = []
 
-    api = API(url="http://aqueductcore:8000", timeout=1)
+    api = API(url="http://host.docker.internal:8000", timeout=1)
 
     for _ in range(3):
         experiment = api.create_experiment(title=expected_title, description=expected_description)
