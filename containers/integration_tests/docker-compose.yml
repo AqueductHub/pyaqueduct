@@ -1,4 +1,25 @@
+x-aqueduct-common: &aqueduct-common
+  platform: linux/amd64
+  image: aqueducthub/aqueductcore-dev:latest
+  restart: always
+  depends_on:
+    - postgres
+    - rabbitmq
+  environment:
+    EXPERIMENTS_DIR_PATH: /tmp/aqueduct_experiments
+    EXTENSIONS_DIR_PATH: /workspace/external/extensions
+    POSTGRES_USERNAME: admin
+    POSTGRES_PASSWORD: admin
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: aqueduct
+    CELERY_MESSAGE_QUEUE: amqp://guest:guest@rabbitmq:5672
+  volumes:
+    - /tmp/aqueduct_experiments:/tmp/aqueduct_experiments
+    - /tmp/aqueduct_extensions:/tmp/aqueduct_extensions
+
 services:
+
   pyaqueduct_host:
     build:
       context: ../..
@@ -18,39 +39,56 @@ services:
       - ../..:/workspace
 
   aqueductcore:
-    image: aqueducthub/aqueductcore-dev:latest
-    container_name: aqueductcore-server
-    depends_on:
-      postgres:
-        condition: service_healthy
+    <<: *aqueduct-common
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.aqueduct.rule=Host(`aqueduct.localhost`)"
+    expose:
+      - 8000
 
-    environment:
-      EXPERIMENTS_DIR_PATH: /tmp/aqueduct_experiments
-      EXTENSIONS_DIR_PATH: /tmp/aqueduct_extensions
-      POSTGRES_USERNAME: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: aqueduct
+  aqueduct-worker:
+    <<: *aqueduct-common
+    labels:
+      - "traefik.enable=false"
+    command: aqueduct worker
 
-    volumes:
-      - /tmp/aqueduct_experiments:/tmp/aqueduct_experiments
-      - /tmp/aqueduct_extensions:/tmp/aqueduct_extensions
-
+  aqueduct-flower:
+    <<: *aqueduct-common
+    command: aqueduct flower --broker-api http://guest:guest@rabbitmq:15672/api/vhost
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.aqueduct-flower.rule=Host(`flower.localhost`)"
     ports:
-      - "8000:8000"
+      - 5555
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.localhost`)"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+    expose:
+      - 5672
+      - 15672
 
   postgres:
+    platform: linux/amd64
     image: postgres:15-alpine
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d aqueduct"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=aqueduct
+    labels:
+      - "traefik.enable=false"
     expose:
       - 5432
+
+  reverse-proxy:
+    image: traefik:v3.1
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
