@@ -20,7 +20,7 @@ def test_connection():
     expected_title = "test title"
     expected_description = "test description"
 
-    api = API(url="host.docker.internal:8000", timeout=1)
+    api = API(url="http://aqueductcore:8000", timeout=1)
 
     api.create_experiment(title=expected_title, description=expected_description)
 

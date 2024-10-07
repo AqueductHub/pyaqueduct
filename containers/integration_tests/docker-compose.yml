@@ -37,8 +37,8 @@ services:
       - /tmp/aqueduct_experiments:/tmp/aqueduct_experiments
       - /tmp/aqueduct_extensions:/tmp/aqueduct_extensions
 
-    expose:
-      - 8000
+    ports:
+      - "8000:8000"
 
   postgres:
     image: postgres:15-alpine
