@@ -3,8 +3,10 @@ x-aqueduct-common: &aqueduct-common
   image: aqueducthub/aqueductcore-dev:latest
   restart: always
   depends_on:
-    - postgres
-    - rabbitmq
+    postgres:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_started
   environment:
     EXPERIMENTS_DIR_PATH: /tmp/aqueduct_experiments
     EXTENSIONS_DIR_PATH: /workspace/external/extensions
@@ -75,6 +77,11 @@ services:
     platform: linux/amd64
     image: postgres:15-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d aqueduct"]
+      interval: 5s
+      timeout: 5s
+      retries: 5    
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
