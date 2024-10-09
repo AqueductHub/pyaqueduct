@@ -11,7 +11,7 @@ mkdir -p /tmp/aqueduct_experiments && \
 mkdir -p /tmp/aqueduct_extensions
 
 echo "Building the stack"
-docker-compose -f $PROJECT_ROOT/containers/integration_tests/docker-compose.yml up -d
+docker compose -f $PROJECT_ROOT/containers/integration_tests/docker-compose.yml up -d
 
 echo "Installing dependencies"
 docker exec --workdir /workspace pyaqueduct-host-dev poetry install 
