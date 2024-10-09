@@ -1,14 +1,15 @@
 """Task module."""
 
-from uuid import UUID
 from datetime import datetime
 from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel, PrivateAttr
+
 from pyaqueduct.client import AqueductClient
+from pyaqueduct.client.experiment_types import ExperimentData
 from pyaqueduct.client.extension_types import ExtensionCancelResultData
 from pyaqueduct.client.task_types import ParameterData
-from pyaqueduct.client.experiment_types import ExperimentData
 
 
 class Task(BaseModel):
@@ -38,9 +39,9 @@ class Task(BaseModel):
     parameters: List[ParameterData]
     """List of parameters with key and value passed to action"""
 
-    def __init__(self, client: AqueductClient, task_id: str):
+    def __init__(self, client: AqueductClient, uuid: str):
         # Call parent constructor for Pydantic validation
-        task_data = client.get_task(task_id)
+        task_data = client.get_task(uuid)
 
         parameters = [
             param if isinstance(param, ParameterData) else ParameterData.from_dict(param)
@@ -53,7 +54,7 @@ class Task(BaseModel):
             created_by=task_data.created_by,
             received_at=task_data.received_at,
             experiment=task_data.experiment,
-            parameters=parameters
+            parameters=parameters,
         )
 
         self._client = client

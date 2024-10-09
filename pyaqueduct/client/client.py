@@ -139,7 +139,9 @@ class AqueductClient(BaseModel):
             create_experiment_mutation,
             {"title": title, "description": description, "tags": tags or []},
         )
-        experiment_obj = ExperimentData.from_dict(data["createExperiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["createExperiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
 
@@ -166,7 +168,9 @@ class AqueductClient(BaseModel):
                 "description": description,
             },
         )
-        experiment_obj = ExperimentData.from_dict(data["updateExperiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["updateExperiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
 
@@ -205,7 +209,9 @@ class AqueductClient(BaseModel):
                 "tags": tags,
             },
         )
-        experiments_obj = ExperimentsInfo.from_dict(data["experiments"]) # pylint: disable=unsubscriptable-object
+        experiments_obj = ExperimentsInfo.from_dict(
+            data["experiments"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info(
             "Fetched %s experiments, total %s experiments",
             len(experiments_obj.experiments),
@@ -228,7 +234,9 @@ class AqueductClient(BaseModel):
             get_experiment_query,
             {"type": "UUID", "value": str(experiment_uuid)},
         )
-        experiment_obj = ExperimentData.from_dict(data["experiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["experiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -247,7 +255,9 @@ class AqueductClient(BaseModel):
             get_experiment_query,
             {"type": "EID", "value": eid},
         )
-        experiment_obj = ExperimentData.from_dict(data["experiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["experiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -267,7 +277,9 @@ class AqueductClient(BaseModel):
             add_tags_to_experiment_mutation,
             {"uuid": str(experiment_uuid), "tags": tags},
         )
-        experiment_obj = ExperimentData.from_dict(data["addTagsToExperiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["addTagsToExperiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Added tags %s to experiment <%s>", tags, experiment_obj.title)
         return experiment_obj
 
@@ -300,7 +312,9 @@ class AqueductClient(BaseModel):
             {"uuid": str(experiment_uuid), "tag": tag},
         )
 
-        experiment_obj = ExperimentData.from_dict(data["removeTagFromExperiment"])  # pylint: disable=unsubscriptable-object
+        experiment_obj = ExperimentData.from_dict(
+            data["removeTagFromExperiment"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
@@ -340,7 +354,7 @@ class AqueductClient(BaseModel):
             get_all_tags_query,
             {"limit": limit, "offset": offset, "dangling": dangling},
         )
-        tags_obj = TagsData.from_dict(data["tags"]) # pylint: disable=unsubscriptable-object
+        tags_obj = TagsData.from_dict(data["tags"])  # pylint: disable=unsubscriptable-object
         logging.info("Fetched %s tags, total %s tags", len(tags_obj.tags), tags_obj.total_count)
         return tags_obj
 
@@ -430,7 +444,7 @@ class AqueductClient(BaseModel):
         extensions_list = list(
             map(
                 ExtensionData.from_dict,
-                extensions_response["extensions"], # pylint: disable=unsubscriptable-object
+                extensions_response["extensions"],  # pylint: disable=unsubscriptable-object
             )
         )
         logging.info("Fetched %s extensions", len(extensions_list))
@@ -471,7 +485,9 @@ class AqueductClient(BaseModel):
                 error.errors if error.errors else "Unknown error occurred in the remote operation."
             ) from error
 
-        result = ExtensionExecutionResultData.from_dict(extension_result["executeExtension"]) # pylint: disable=unsubscriptable-object
+        result = ExtensionExecutionResultData.from_dict(
+            extension_result["executeExtension"]
+        )  # pylint: disable=unsubscriptable-object
         logging.info(
             "Executed a %s / %s extension action with result code %d",
             extension,
@@ -486,14 +502,12 @@ class AqueductClient(BaseModel):
         Args:
             task_id: Task identifier
         """
-        task_result = self.fetch_response(
-            get_task_query, variable_values={"taskId": task_id}
-        )
+        task_result = self.fetch_response(get_task_query, variable_values={"taskId": task_id})
 
-        result = TaskData.from_dict(task_result["task"]) # pylint: disable=unsubscriptable-object
+        result = TaskData.from_dict(task_result["task"])  # pylint: disable=unsubscriptable-object
         return result
 
-    def get_tasks( # pylint: disable=too-many-arguments
+    def get_tasks(  # pylint: disable=too-many-arguments
         self,
         limit: int,
         offset: int,
@@ -532,7 +546,7 @@ class AqueductClient(BaseModel):
 
         result = [
             TaskData.from_dict(task)
-            for task in task_result["tasks"]["tasksData"] # pylint: disable=unsubscriptable-object
+            for task in task_result["tasks"]["tasksData"]  # pylint: disable=unsubscriptable-object
         ]
         return result
 
@@ -542,14 +556,12 @@ class AqueductClient(BaseModel):
         Args:
             task_id: Task identifier
         """
-        revoke_result = self.fetch_response( # pylint: disable=unsubscriptable-object
+        revoke_result = self.fetch_response(  # pylint: disable=unsubscriptable-object
             cancel_task_mutation,
             variable_values={"taskId": task_id},
         )["cancelTask"]
 
-        print("£"*200)
-        print(revoke_result)
-        print("£"*200)
-
-        result = ExtensionCancelResultData.from_dict(revoke_result) # pylint: disable=unsubscriptable-object
+        result = ExtensionCancelResultData.from_dict(
+            revoke_result
+        )  # pylint: disable=unsubscriptable-object
         return result

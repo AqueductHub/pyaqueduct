@@ -184,17 +184,14 @@ class API(BaseModel):
     @validate_call
     def get_task(
         self,
-        task_id
+        task_id: UUID,
     ) -> Task:
         """Get task by passing task_id.
 
         Returns:
             Task object
         """
-        return Task(
-            client=self._client,
-            task_id=task_id
-        )
+        return Task(client=self._client, task_id=task_id)
 
     @validate_call
     def get_tasks(  # pylint: disable=too-many-arguments, duplicate-code
@@ -226,7 +223,7 @@ class API(BaseModel):
         return [
             Task(
                 client=self._client,
-                task_id=task.task_id,
+                uuid=task.task_id,
             )
             for task in tasks
         ]
