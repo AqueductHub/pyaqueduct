@@ -53,15 +53,6 @@ services:
       - "traefik.enable=false"
     command: aqueduct worker
 
-  aqueduct-flower:
-    <<: *aqueduct-common
-    command: aqueduct flower --broker-api http://guest:guest@rabbitmq:15672/api/vhost
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.aqueduct-flower.rule=Host(`flower.localhost`)"
-    ports:
-      - 5555
-
   rabbitmq:
     image: rabbitmq:3-management
     labels:
