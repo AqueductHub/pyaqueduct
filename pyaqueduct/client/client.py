@@ -140,8 +140,8 @@ class AqueductClient(BaseModel):
             {"title": title, "description": description, "tags": tags or []},
         )
         experiment_obj = ExperimentData.from_dict(
-            data["createExperiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["createExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Created experiment - %s - %s", experiment_obj.uuid, experiment_obj.title)
         return experiment_obj
 
@@ -169,8 +169,8 @@ class AqueductClient(BaseModel):
             },
         )
         experiment_obj = ExperimentData.from_dict(
-            data["updateExperiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["updateExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Updated experiment - %s", experiment_obj.uuid)
         return experiment_obj
 
@@ -210,8 +210,8 @@ class AqueductClient(BaseModel):
             },
         )
         experiments_obj = ExperimentsInfo.from_dict(
-            data["experiments"]
-        )  # pylint: disable=unsubscriptable-object
+            data["experiments"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info(
             "Fetched %s experiments, total %s experiments",
             len(experiments_obj.experiments),
@@ -235,8 +235,8 @@ class AqueductClient(BaseModel):
             {"type": "UUID", "value": str(experiment_uuid)},
         )
         experiment_obj = ExperimentData.from_dict(
-            data["experiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["experiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -256,8 +256,8 @@ class AqueductClient(BaseModel):
             {"type": "EID", "value": eid},
         )
         experiment_obj = ExperimentData.from_dict(
-            data["experiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["experiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Fetched experiment - %s", experiment_obj.title)
         return experiment_obj
 
@@ -278,8 +278,8 @@ class AqueductClient(BaseModel):
             {"uuid": str(experiment_uuid), "tags": tags},
         )
         experiment_obj = ExperimentData.from_dict(
-            data["addTagsToExperiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["addTagsToExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Added tags %s to experiment <%s>", tags, experiment_obj.title)
         return experiment_obj
 
@@ -313,8 +313,8 @@ class AqueductClient(BaseModel):
         )
 
         experiment_obj = ExperimentData.from_dict(
-            data["removeTagFromExperiment"]
-        )  # pylint: disable=unsubscriptable-object
+            data["removeTagFromExperiment"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info("Removed tag %s from experiment <%s>", tag, experiment_obj.title)
         return experiment_obj
 
@@ -486,8 +486,8 @@ class AqueductClient(BaseModel):
             ) from error
 
         result = ExtensionExecutionResultData.from_dict(
-            extension_result["executeExtension"]
-        )  # pylint: disable=unsubscriptable-object
+            extension_result["executeExtension"]  # pylint: disable=unsubscriptable-object
+        )
         logging.info(
             "Executed a %s / %s extension action with result code %d",
             extension,
