@@ -10,9 +10,11 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 
 from pyaqueduct.client import AqueductClient
-from pyaqueduct.client.extension_types import (ExtensionExecutionResultData,
-                                            ExtensionActionData,
-                                            ExtensionParameterData)
+from pyaqueduct.client.extension_types import (
+    ExtensionActionData,
+    ExtensionExecutionResultData,
+    ExtensionParameterData,
+)
 
 
 class ExtensionAction(BaseModel):
@@ -84,10 +86,14 @@ class Extension(BaseModel):
 
     actions: List[ExtensionAction]
 
-    def __init__(self, name: str, description: Optional[str],
-                 authors: str, actions: List[ExtensionActionData],
-                 client: AqueductClient):
-        super().__init__(name=name, description=description,
-                         authors=authors, actions=[])
+    def __init__(
+        self,
+        name: str,
+        description: Optional[str],
+        authors: str,
+        actions: List[ExtensionActionData],
+        client: AqueductClient,
+    ):
+        super().__init__(name=name, description=description, authors=authors, actions=[])
         for action in actions:
             self.actions.append(ExtensionAction(self, action, client))

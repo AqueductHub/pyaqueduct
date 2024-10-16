@@ -153,3 +153,21 @@ execute_extension_action_mutation = gql(
     }
     """
 )
+
+cancel_task_mutation = gql(
+    """
+    mutation CancelTask (
+        $taskId: UUID!
+    ) {
+        cancelTask(
+            cancelTaskInput: {
+                taskId: $taskId
+        }
+        ) {
+            uuid
+            resultCode
+            taskStatus
+        }
+    }
+    """
+)

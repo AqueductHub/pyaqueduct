@@ -10,6 +10,8 @@ from pyaqueduct.client import AqueductClient, ExperimentData, ExperimentsInfo
 from pyaqueduct.extensions import Extension, ExtensionAction
 from tests.unittests.mock import patched_execute
 
+test_api_url = "http://test.com"
+
 
 def test_create_experiment(monkeypatch):
     expected_title = "test title"
@@ -32,7 +34,7 @@ def test_create_experiment(monkeypatch):
         )
 
     monkeypatch.setattr(AqueductClient, "create_experiment", patched_create_experiment)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
 
     experiment = api.create_experiment(title=expected_title, description=expected_description)
 
@@ -59,7 +61,7 @@ def test_get_experiment_by_eid(monkeypatch):
         )
 
     monkeypatch.setattr(AqueductClient, "get_experiment_by_eid", patched_get_experiment)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
 
     experiment = api.get_experiment_by_eid(eid=expected_eid)
 
@@ -87,7 +89,7 @@ def test_get_experiment_by_uuid(monkeypatch):
         )
 
     monkeypatch.setattr(AqueductClient, "get_experiment", patched_get_experiment)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
 
     experiment = api.get_experiment_by_uuid(uuid=expected_uuid)
 
@@ -120,7 +122,7 @@ def test_remove_experiment_by_eid(monkeypatch):
 
     monkeypatch.setattr(AqueductClient, "get_experiment_by_eid", patched_get_experiment)
     monkeypatch.setattr(AqueductClient, "remove_experiment", patched_remove_experiment)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
 
     api.remove_experiment_by_eid(eid=expected_eid)
 
@@ -154,7 +156,7 @@ def test_find_experiments(monkeypatch):
         )
 
     monkeypatch.setattr(AqueductClient, "get_experiments", patched_get_experiments)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
 
     experiments = api.find_experiments(search="test title", limit=3)
 
@@ -166,7 +168,7 @@ def test_find_experiments(monkeypatch):
 
 def test_get_extensions(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
     extensions = api.get_extensions()
     assert len(extensions) == 1
     assert isinstance(extensions[0], Extension)
@@ -181,9 +183,14 @@ def test_get_extensions(monkeypatch):
 
 def test_execute_extension_action(monkeypatch):
     monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
-    api = API(url="http://test.com", timeout=1)
+    api = API(url=test_api_url, timeout=1)
     extensions = api.get_extensions()
     result = extensions[0].actions[0].execute({"var1": 1})
     assert result.returnCode == 0
     assert result.stdout != ""
     assert result.stderr == ""
+
+
+def test_get_tasks(monkeypatch):
+    monkeypatch.setattr(SyncClientSession, "execute", patched_execute)
+    api = API(url=test_api_url, timeout=1)
