@@ -191,7 +191,19 @@ class API(BaseModel):
         Returns:
             Task object
         """
-        return Task(client=self._client, task_id=task_id)
+        task = self._client.get_task(
+            task_id=task_id
+        )
+        return Task(
+            client=self._client,
+            uuid=task_id,
+            created_by=task.created_by,
+            received_at=task.received_at,
+            experiment=task.experiment,
+            extension_name=task.extension_name,
+            action_name=task.action_name,
+            parameters=task.parameters,
+        )
 
     @validate_call
     def get_tasks(  # pylint: disable=too-many-arguments, duplicate-code
@@ -224,6 +236,12 @@ class API(BaseModel):
             Task(
                 client=self._client,
                 uuid=task.task_id,
+                created_by=task.created_by,
+                received_at=task.received_at,
+                experiment=task.experiment,
+                extension_name=task.extension_name,
+                action_name=task.action_name,
+                parameters=task.parameters
             )
             for task in tasks
         ]

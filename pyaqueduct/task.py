@@ -39,21 +39,25 @@ class Task(BaseModel):
     parameters: List[ParameterData]
     """List of parameters with key and value passed to action"""
 
-    def __init__(self, client: AqueductClient, uuid: str):
+    def __init__( # pylint: disable=too-many-arguments
+        self,
+        client: AqueductClient,
+        uuid: UUID,
+        created_by: str,
+        received_at: datetime,
+        experiment: ExperimentData,
+        extension_name: str,
+        action_name: str,
+        parameters: List[ParameterData]
+    ):
         # Call parent constructor for Pydantic validation
-        task_data = client.get_task(uuid)
-
-        parameters = [
-            param if isinstance(param, ParameterData) else ParameterData.from_dict(param)
-            for param in task_data.parameters
-        ]
         super().__init__(
-            uuid=task_data.task_id,
-            extension_name=task_data.extension_name,
-            action_name=task_data.action_name,
-            created_by=task_data.created_by,
-            received_at=task_data.received_at,
-            experiment=task_data.experiment,
+            uuid=uuid,
+            created_by=created_by,
+            received_at=received_at,
+            experiment=experiment,
+            extension_name=extension_name,
+            action_name=action_name,
             parameters=parameters,
         )
 

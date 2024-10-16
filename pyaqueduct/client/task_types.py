@@ -60,7 +60,7 @@ class TaskData(BaseModel):
             Object populated with server response data.
         """
         return cls(
-            task_id=UUID(data["taskId"]),
+            task_id=UUID(data["uuid"]),
             task_status=data["taskStatus"],
             result_code=data["resultCode"],
             extension_name=data["extensionName"],

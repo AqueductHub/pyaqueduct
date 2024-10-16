@@ -352,7 +352,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                             "resultCode": None,
                             "stdErr": "terminated",
                             "stdOut": None,
-                            "taskId": "7cc868d9-5b3c-4785-bf98-5ed982b1d9ad",
+                            "uuid": "7cc868d9-5b3c-4785-bf98-5ed982b1d9ad",
                             "taskStatus": "REVOKED",
                         },
                         {
@@ -448,7 +448,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                             "resultCode": None,
                             "stdErr": "terminated",
                             "stdOut": None,
-                            "taskId": "2a8d1dc5-12b0-4582-89f5-755a5948093e",
+                            "uuid": "2a8d1dc5-12b0-4582-89f5-755a5948093e",
                             "taskStatus": "REVOKED",
                         },
                         {
@@ -544,7 +544,7 @@ def patched_execute(self, query, variable_values, **kwargs):
                             "resultCode": None,
                             "stdErr": "terminated",
                             "stdOut": None,
-                            "taskId": "1af71a66-6e57-4cc8-9970-9af17f64000a",
+                            "uuid": "1af71a66-6e57-4cc8-9970-9af17f64000a",
                             "taskStatus": "REVOKED",
                         },
                     ]

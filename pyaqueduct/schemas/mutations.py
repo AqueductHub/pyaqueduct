@@ -164,7 +164,7 @@ cancel_task_mutation = gql(
                 taskId: $taskId
         }
         ) {
-            taskId
+            uuid
             resultCode
             taskStatus
         }

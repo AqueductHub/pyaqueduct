@@ -25,7 +25,6 @@ class ExtensionAction(BaseModel):
     """List of parameters which extension action expects to accept."""
 
     data: ExtensionActionData
-
     extension: Extension = None
     """Extension to which this action belongs."""
 

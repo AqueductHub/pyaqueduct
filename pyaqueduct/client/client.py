@@ -496,13 +496,13 @@ class AqueductClient(BaseModel):
         )
         return result
 
-    def get_task(self, task_id: str) -> TaskData:
+    def get_task(self, task_id: UUID) -> TaskData:
         """Get details for a submitted taks
 
         Args:
             task_id: Task identifier
         """
-        task_result = self.fetch_response(get_task_query, variable_values={"taskId": task_id})
+        task_result = self.fetch_response(get_task_query, variable_values={"taskId": str(task_id)})
 
         result = TaskData.from_dict(task_result["task"])  # pylint: disable=unsubscriptable-object
         return result

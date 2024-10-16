@@ -124,7 +124,7 @@ get_task_query = gql(
         task (
             taskId: $taskId
         ) {
-            taskId
+            uuid
             extensionName
             actionName
             receivedAt
@@ -189,7 +189,7 @@ get_tasks_query = gql(
             }
         ) {
             tasksData {
-                taskId
+                uuid
                 extensionName
                 actionName
                 receivedAt
