@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from datetime import datetime
-from uuid import UUID
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import (
     BaseModel,
@@ -20,6 +20,7 @@ from pyaqueduct.client import AqueductClient
 from pyaqueduct.experiment import Experiment
 from pyaqueduct.extensions import Extension
 from pyaqueduct.settings import Settings
+from pyaqueduct.task import Task
 
 
 class API(BaseModel):
@@ -178,4 +179,69 @@ class API(BaseModel):
                 client=self._client,
             )
             for extension_data in self._client.get_extensions()
+        ]
+
+    @validate_call
+    def get_task(
+        self,
+        task_id: UUID,
+    ) -> Task:
+        """Get task by passing task_id.
+
+        Returns:
+            Task object
+        """
+        task = self._client.get_task(
+            task_id=task_id
+        )
+        return Task(
+            client=self._client,
+            uuid=task_id,
+            created_by=task.created_by,
+            received_at=task.received_at,
+            experiment=task.experiment,
+            extension_name=task.extension_name,
+            action_name=task.action_name,
+            parameters=task.parameters,
+        )
+
+    @validate_call
+    def get_tasks(  # pylint: disable=too-many-arguments, duplicate-code
+        self,
+        limit: PositiveInt = 10,
+        offset: NonNegativeInt = 0,
+        extension_name: Optional[str] = None,
+        experiment_uuid: Optional[str] = None,
+        action_name: Optional[str] = None,
+        username: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+    ) -> List[Task]:
+        """Get task by passing task_id.
+
+        Returns:
+            Task object
+        """
+        tasks = self._client.get_tasks(
+            limit=limit,
+            offset=offset,
+            extension_name=extension_name,
+            experiment_uuid=experiment_uuid,
+            action_name=action_name,
+            username=username,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        return [
+            Task(
+                client=self._client,
+                uuid=task.task_id,
+                created_by=task.created_by,
+                received_at=task.received_at,
+                experiment=task.experiment,
+                extension_name=task.extension_name,
+                action_name=task.action_name,
+                parameters=task.parameters
+            )
+            for task in tasks
         ]

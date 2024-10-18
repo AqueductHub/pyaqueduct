@@ -17,6 +17,25 @@ class ExtensionParameterData(BaseModel):
     defaultValue: Optional[str]
     options: Optional[List[str]]
 
+    @classmethod
+    def from_dict(cls, data: dict) -> ExtensionParameterData:
+        """Composes an object from server response
+
+        Args:
+            data: server response
+        
+        Returns:
+            Object populated with server response data
+        """
+        return cls(
+            name=data["name"],
+            displayName=data["displayName"],
+            description=data["description"],
+            dataType=data["dataType"],
+            defaultValue=data["defaultValue"],
+            options=data["options"],
+        )
+
 
 class ExtensionActionData(BaseModel):
     """Executable extension action."""
@@ -68,3 +87,21 @@ class ExtensionExecutionResultData(BaseModel):
             Object populated with server response data.
         """
         return ExtensionExecutionResultData(**data)
+
+
+class ExtensionCancelResultData(BaseModel):
+    """Results for task cancellation"""
+
+    taskStatus: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, data: dict) -> ExtensionCancelResultData:
+        """Compose an object from a server response.
+
+        Args:
+            data: server response
+
+        Returns:
+            Object populated with server response data
+        """
+        return ExtensionCancelResultData(**data)

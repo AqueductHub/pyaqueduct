@@ -17,9 +17,11 @@ from tqdm import tqdm
 
 from pyaqueduct.client.experiment_types import ExperimentData, ExperimentsInfo, TagsData
 from pyaqueduct.client.extension_types import (
+    ExtensionCancelResultData,
     ExtensionData,
     ExtensionExecutionResultData,
 )
+from pyaqueduct.client.task_types import TaskData
 from pyaqueduct.exceptions import (
     FileDownloadError,
     FileRemovalError,
@@ -30,6 +32,7 @@ from pyaqueduct.exceptions import (
 )
 from pyaqueduct.schemas.mutations import (
     add_tags_to_experiment_mutation,
+    cancel_task_mutation,
     create_experiment_mutation,
     execute_extension_action_mutation,
     remove_experiment_mutation,
@@ -41,6 +44,8 @@ from pyaqueduct.schemas.queries import (
     get_all_tags_query,
     get_experiment_query,
     get_experiments_query,
+    get_task_query,
+    get_tasks_query,
 )
 
 
@@ -55,7 +60,7 @@ def process_response_common(code: codes) -> None:
     if code is codes.UNAUTHORIZED:
         raise UnAuthorizedError("API token couldn't be verified or is missing.") from None
 
-    raise RemoteOperationError("Remove operation failed.")
+    raise RemoteOperationError("Remote operation failed.")
 
 
 class AqueductClient(BaseModel):
@@ -296,11 +301,11 @@ class AqueductClient(BaseModel):
         Remove a tag from an experiment
 
         Args:
-        - experiment_uuid (UUID): UUID of experiment frin which tag has to be removed
-        - tag (str): Tag to be removed from experiment
+            experiment_uuid (UUID): UUID of experiment frin which tag has to be removed
+            tag (str): Tag to be removed from experiment
 
         Returns:
-        Experiment: Experiment having tag removed
+            Experiment: Experiment having tag removed
         """
         data = self.fetch_response(
             remove_tag_from_experiment_mutation,
@@ -338,9 +343,9 @@ class AqueductClient(BaseModel):
         Get a list of existing tags
 
         Args:
-        - limit (int): Number of tags to be fetched
-        - offset (offset): Number of tags to skip
-        - dangling (bool): If tags not linked to any experiment should be included or not
+            limit (int): Number of tags to be fetched
+            offset (offset): Number of tags to skip
+            dangling (bool): If tags not linked to any experiment should be included or not
 
         Returns:
         List[str]: A list of all existing tags
@@ -489,4 +494,74 @@ class AqueductClient(BaseModel):
             action,
             result.returnCode,
         )
+        return result
+
+    def get_task(self, task_id: UUID) -> TaskData:
+        """Get details for a submitted taks
+
+        Args:
+            task_id: Task identifier
+        """
+        task_result = self.fetch_response(get_task_query, variable_values={"taskId": str(task_id)})
+
+        result = TaskData.from_dict(task_result["task"])  # pylint: disable=unsubscriptable-object
+        return result
+
+    def get_tasks(  # pylint: disable=too-many-arguments
+        self,
+        limit: int,
+        offset: int,
+        extension_name: Optional[str] = None,
+        experiment_uuid: Optional[str] = None,
+        action_name: Optional[str] = None,
+        username: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+    ) -> TaskData:
+        """Get details for a submitted taks
+
+        Args:
+            limit: Pagination field, number of tasks to be fetched.
+            offset: Pagination field, number of tasks to skip.
+            extensionName: Name of extension for which task was ran.
+            actionName: Name of action for which task was ran.
+            experimentUuid: Uuid of experiment for which task was ran.
+            username: Username of user who ran the task.
+            startDate: Start datetime to filter experiments (timezone aware).
+            endDate: End datetime to filter experiments to (timezone aware).
+        """
+        task_result = self.fetch_response(
+            get_tasks_query,
+            variable_values={
+                "limit": limit,
+                "offset": offset,
+                "extensionName": extension_name,
+                "experimentUuid": experiment_uuid,
+                "actionName": action_name,
+                "username": username,
+                "startDate": start_date,
+                "endDate": end_date,
+            },
+        )
+
+        result = [
+            TaskData.from_dict(task)
+            for task in task_result["tasks"]["tasksData"]  # pylint: disable=unsubscriptable-object
+        ]
+        return result
+
+    def cancel_task(self, task_id: str) -> ExtensionCancelResultData:
+        """Stops and cancels task running in Celery
+
+        Args:
+            task_id: Task identifier
+        """
+        revoke_result = self.fetch_response(  # pylint: disable=unsubscriptable-object
+            cancel_task_mutation,
+            variable_values={"taskId": task_id},
+        )["cancelTask"]
+
+        result = ExtensionCancelResultData.from_dict(
+            revoke_result
+        )  # pylint: disable=unsubscriptable-object
         return result
