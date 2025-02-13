@@ -17,7 +17,7 @@ on:
         default: "MAJOR.MINOR.PATCH"
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
