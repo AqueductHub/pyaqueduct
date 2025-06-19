@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://aqueducthub.github.io/pyaqueduct/main/</loc>
-         <lastmod>2025-02-17</lastmod>
+         <lastmod>2025-06-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://aqueducthub.github.io/pyaqueduct/main/api-reference/</loc>
-         <lastmod>2025-02-17</lastmod>
+         <lastmod>2025-06-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://aqueducthub.github.io/pyaqueduct/main/extensions/</loc>
-         <lastmod>2025-02-17</lastmod>
+         <lastmod>2025-06-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://aqueducthub.github.io/pyaqueduct/main/getting-started/</loc>
-         <lastmod>2025-02-17</lastmod>
+         <lastmod>2025-06-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
