@@ -1,3 +1,11 @@
+⚠️ *Archived Repository*
+
+
+This repository has been archived and is no longer actively maintained. No further updates will be made. To learn more about Riverlane's products for Quantum Error Correction, visit [riverlane.com](riverlane.com).
+
+Feel free to fork Aqueduct if you find it useful!
+
+
 # PyAqueduct: Aqueduct Python Client Library
 
 [![Automated release](https://github.com/AqueductHub/pyaqueduct/actions/workflows/automated_release.yaml/badge.svg)](https://github.com/AqueductHub/pyaqueduct/actions/workflows/automated_release.yaml)
